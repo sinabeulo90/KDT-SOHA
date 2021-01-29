@@ -1,0 +1,10 @@
+<launch>
+  <!-- drive -->
+  <node name="driver" pkg="soha_drive" type="test.py" output="screen" />
+
+  <!-- rosbag test -->
+  <!-- <node pkg="rosbag" type="play" name="player" args="-l /media/psf/Downloads/cam_topic_curv.bag" /> -->
+  <!-- <node pkg="rosbag" type="play" name="player" args="-l /media/psf/Downloads/cam_topic_direct.bag" /> -->
+  <!-- <node pkg="rosbag" type="play" name="player" args="-l /media/psf/Downloads/cam_topic_dis.bag" /> -->
+  <!-- <node pkg="rosbag" type="play" name="player" args="-l /media/psf/Downloads/cam_topic_start.bag" /> -->
+</launch>
