@@ -14,7 +14,11 @@ params_dir = os.path.join(src_path, "params", "image_processing")
 
 
 # Trackbar 초기화
-tb_sliding_window = Trackbar(os.path.join(params_dir, "sliding_window"), "sliding_window", debug=True)
+tb_sliding_window = Trackbar(os.path.join(params_dir, "sliding_window"), "sliding_window", debug=False)
+
+
+def rint(point):
+    return np.rint(point).astype(np.int32)
 
 
 def in_range(x, y, frame):
@@ -219,7 +223,7 @@ def sliding_window(frame):
     """
     왼쪽 영역/오른쪽 영역에서 검출한 차선의 최대 길이가 10이하인 경우 측면 차선 검출
     """
-    if left_dist <= 15:
+    if left_dist <= 20:
         left_peak_ys = get_peak_ys(range_edge_scan_half_width, frame_height-range_edge_scan_half_height,
                                    range_edge_scan_width, range_edge_scan_height, hist_threshold, step_size, frame)
 
@@ -232,7 +236,7 @@ def sliding_window(frame):
             left_visited_side.append(visited)
         left_visited = left_visited if len(left_visited) > len(left_visited_side) else left_visited_side
 
-    if right_dist <= 15:
+    if right_dist <= 20:
         right_peak_ys = get_peak_ys(frame_width-range_edge_scan_half_width, frame_height-range_edge_scan_half_height,
                                    range_edge_scan_width, range_edge_scan_height, hist_threshold, step_size, frame)
 
@@ -285,36 +289,78 @@ def sliding_window(frame):
     cv.putText(explain_image, str(right_dist), (430, 100), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     return choosen_left, choosen_right, explain_image
-    #
-    # """
-    # 슬라이딩 윈도우가 여러 갈래로 나뉘어 출력되므로, 각 슬라이딩의 결과 좌표를 담는 리스트가 필요하다.
-    # """
-    # #  탐색된 슬라이딩 윈도우의 중점 좌표들을 수집하는 리스트
-    # left_x_group, left_y_group, right_x_group, right_y_group = [], [], [], []
-    #
-    # viewer = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
-    # for win_center_x in left_centers:
-    #     win_center_y = frame_height - win_half_height
-    #     left_x, left_y = recursive_sliding_window(frame, win_center_x, win_center_y, win_width, win_height, count_threshold, scan_width, scan_height, step_size, viewer)
-    #
-    #     left_x_group.append(left_x)
-    #     left_y_group.append(left_y)
-    #
-    #
-    # # for left_x, left_y in zip(left_x_group, left_y_group):
-    # #     for x, y in zip(left_x, left_y):
-    # #         cv.circle(viewer, (x, y), 3, (0, 0, 255), 5)
-    # # tb_sliding_window.show(viewer)
-    #
-    # for win_center_x in right_centers:
-    #     win_center_y = frame_height - win_half_height
-    #     right_x, right_y = recursive_sliding_window(frame, win_center_x, win_center_y, win_width, win_height, count_threshold, scan_width, scan_height, step_size, viewer)
-    #
-    #     right_x_group.append(right_x)
-    #     right_y_group.append(right_y)
-    #
-    #
-    # left_coeff = [ np.polyfit(ly, lx, 2) for ly, lx in zip(left_y_group, left_x_group) if len(ly) > 3 and len(lx) > 3 ]
-    # right_coeff = [ np.polyfit(ry, rx, 2) for ry, rx in zip(right_y_group, right_x_group) if len(ry) > 3 and len(rx) > 3 ]
-    #
-    # return left_coeff, right_coeff#, viewer
+
+
+def get_linear_function(points, thresh_count=15):
+    if len(points) > thresh_count:
+        return False, None
+
+    xs, ys = [], []
+
+    for x, y in points:
+        xs.append(x)
+        ys.append(y)
+    
+    xs = np.array(xs)
+    ys = np.array(ys)
+
+    y0 = np.polyfit(ys, xs, 2)
+    result_f = np.poly1d(y0)
+    return True, result_f
+
+
+def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0):
+    """
+    rel_x_ratio: 1에 가까울 수록, 미래의 조향각을 더 일찍 적용
+        - 속도가 빠를 수록, 1에 가까워야 한다.
+    """
+    height, width = frame.shape[:2]
+    height2 = height // 4 * 3
+
+    heading_src = (linear_func(height), height)
+    heading_dst = (linear_func(height2), height2)
+
+    # x ratio 적용
+    heading_rel =  ((heading_dst[0] - heading_src[0])*rel_x_ratio, heading_dst[1] - heading_src[1])
+    heading_rad = np.arctan2(heading_rel[1], heading_rel[0])
+    
+    heading_deg = np.degrees(heading_rad)
+    steering_deg = heading_deg + 90
+
+    """
+    Explain Image
+    """
+    explain_image = frame
+    if frame.ndim == 1:
+        explain_image = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+
+    ys = np.linspace(0, height, num=height, endpoint=True)
+    xs = linear_func(ys)
+    
+    for x, y in zip(xs, ys):
+        if in_range(x, y, explain_image):
+            point = tuple(rint([x, y]))
+            cv.circle(explain_image, point, 3, (0, 255, 255), -1)
+
+    # rel_x_ratio 적용된 새로운 heading 계산
+    heading_src = tuple(rint([width//2, height]))
+    heading_dst = tuple(rint([width//2 - (height-height2)/np.tan(heading_rad), height2]))
+
+    cv.circle(explain_image, heading_src, 1, (0, 0, 255), -1)
+    cv.circle(explain_image, heading_dst, 1, (0, 0, 255), -1)
+    cv.line(explain_image, heading_src, heading_dst, (0, 0, 255), 2)
+    return steering_deg, explain_image
+
+
+
+if __name__ == "__main__":
+    import cv2 as cv
+    from image_processing import processing
+    frame = cv.imread("../cam_tune_screenshot_12.03.2021.png")
+    while True:
+        processed_frame, explain1 = processing(frame)
+        choosen_left, choosen_right, explain2 = sliding_window(processed_frame)
+
+        cv.imshow("test1", explain1)
+        cv.imshow("test2", explain2)
+        cv.waitKey(10)

@@ -15,15 +15,22 @@
   <!-- rosbag 기록: 'rosbag'패키지에 있는 'record'파일을 'recoder'라는 이름으로 노드를 실행한다. -->
   <arg name="record" default="false" 
       doc="record 변수를 생성하고, 기본값을 false로 설정한다. 옵션으로 기록을 사용하기 위해 생성하였다." />
+  <!-- disable compressed depth plugin for image transport -->
+  <group ns="usb_cam/image_raw" >
+  <rosparam param="disable_pub_plugins">
+    - 'image_transport/compressedDepth'
+    - 'image_transport/theora'
+  </rosparam>
+  </group>
   <!--
     'rosbag' 옵션
-      -j: BZ2 압축 사용한다.
       -o PREFIX: 'PREFIX'는 '$(find sliding_window)/rosbag/track'가 되는데, 이때 출력되는 rosbag 파일은
                 '$(sliding_window 패키지 경로)/rosbag/track_2021-01-29-23-51-17.bag'와 같이 끝에 기록이 시작된 시간이 붙는다.
     <if> tag: 'record' 변수값이 true일 경우 해당 노드가 실행된다.
   -->
   <node name="recoder" pkg="rosbag" type="record"
-        args="-jo $(find sliding_window)/rosbag/track /rosout" if="$(arg record)" />
+        args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -o $(find sliding_window)/rosbag/track /usb_cam/image_raw" if="$(arg record)" />
+        <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -ajo $(find sliding_window)/rosbag/track" if="$(arg record)" /> -->
 
 
   <!-- xycar_b2 motor -->
@@ -59,7 +66,7 @@
 
 
   <!-- ultrasonic -->
-  <node pkg="xycar_ultrasonic" type="xycar_ultrasonic.py" name="xycar_ultrasonic" output="screen" />
+  <!-- <node pkg="xycar_ultrasonic" type="xycar_ultrasonic.py" name="xycar_ultrasonic" output="screen" /> -->
 
 
   <!-- 9dof IMU -->

@@ -1,7 +1,7 @@
 class LowPassFilter():
     def __init__(self, alpha):
         self.alpha = alpha
-        self.prev_lpf = None
+        self.prev_lpf = 0
 
     def get_lpf(self, x):
         if self.prev_lpf is None:

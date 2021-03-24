@@ -106,7 +106,7 @@ while True:
         func_coef_right = get_linear_function(choosen_right)
 
         if func_coef_left and func_coef_right:
-            for coef in [func_coef_left, func_coef_right, (func_coef_left + func_coef_right)/2]:
+            for coef in [func_coef_left, func_coef_right]:
                 func = np.poly1d(coef)
                 new_ys = np.linspace(0, processed_frame.shape[0], num=processed_frame.shape[0], endpoint=True)
                 new_xs = func(new_ys)
@@ -115,6 +115,17 @@ while True:
                     if 0 < y < processed_frame.shape[0] and 0 < x < processed_frame.shape[1]:
                         x, y = int(x), int(y)
                         cv.circle(explain2, (x, y), 3, (0, 255, 255), -1)
+
+            for coef in [(func_coef_left + func_coef_right)/2]:
+                func = np.poly1d(coef)
+                new_ys = np.linspace(0, processed_frame.shape[0], num=processed_frame.shape[0], endpoint=True)
+                new_xs = func(new_ys)
+
+                for x, y in zip(new_xs, new_ys):
+                    if 0 < y < processed_frame.shape[0] and 0 < x < processed_frame.shape[1]:
+                        x, y = int(x), int(y)
+                        cv.circle(explain2, (x, y), 3, (0, 0, 255), -1)
+
 
             heading_src = (processed_width//2, processed_height)
             heading_dst = (func(processed_height2), processed_height2)
