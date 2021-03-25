@@ -1,7 +1,7 @@
 <launch>
 
   <!-- main -->
-  <node name="sliding_window_driver" pkg="sliding_window" type="main.py" output="screen" />
+  <!-- <node name="sliding_window_driver" pkg="sliding_window" type="main.py" output="screen" /> -->
 
 
   <!-- rosbag 파일 재생: 'rosbag'패키지에 있는 'play'파일을 'player'라는 이름으로 노드를 실행한다. -->
@@ -65,7 +65,7 @@
     <remap from="camera_info" to="/usb_cam/camera_info"/>
   </node>
 
-<!-- lidar -->
+  <!-- lidar -->
   <node name="ydlidar_node"  pkg="ydlidar_ros"  type="ydlidar_node" output="screen" respawn="false" >
     <param name="port"         type="string" value="/dev/ttyRPL"/>  
     <param name="baudrate"         type="int" value="230400"/>  

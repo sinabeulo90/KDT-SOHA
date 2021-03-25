@@ -211,7 +211,6 @@ def sliding_window(frame):
         left_visited.append(visited)
         left_dist = max(left_dist, dist)
 
-
     for center_x in right_peak_xs:
         right_cache, visited, dist = get_floodfill(right_cache, center_x, center_y,     \
                                                    scan_width, scan_height, scan_theta, \
@@ -291,25 +290,7 @@ def sliding_window(frame):
     return choosen_left, choosen_right, explain_image
 
 
-def get_linear_function(points, thresh_count=15):
-    if len(points) > thresh_count:
-        return False, None
-
-    xs, ys = [], []
-
-    for x, y in points:
-        xs.append(x)
-        ys.append(y)
-    
-    xs = np.array(xs)
-    ys = np.array(ys)
-
-    y0 = np.polyfit(ys, xs, 2)
-    result_f = np.poly1d(y0)
-    return True, result_f
-
-
-def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0):
+def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0, comment=None):
     """
     rel_x_ratio: 1에 가까울 수록, 미래의 조향각을 더 일찍 적용
         - 속도가 빠를 수록, 1에 가까워야 한다.
@@ -321,7 +302,7 @@ def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0)
     heading_dst = (linear_func(height2), height2)
 
     # x ratio 적용
-    heading_rel =  ((heading_dst[0] - heading_src[0])*rel_x_ratio, heading_dst[1] - heading_src[1])
+    heading_rel = ((heading_dst[0] - heading_src[0])*rel_x_ratio, heading_dst[1] - heading_src[1])
     heading_rad = np.arctan2(heading_rel[1], heading_rel[0])
     
     heading_deg = np.degrees(heading_rad)
