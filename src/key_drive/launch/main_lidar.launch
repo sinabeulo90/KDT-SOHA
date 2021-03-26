@@ -1,7 +1,7 @@
 <launch>
 
   <!-- main -->
-  <node name="sliding_window_driver" pkg="sliding_window" type="main.py" output="screen" />
+  <!-- <node name="sliding_window_driver" pkg="sliding_window" type="main.py" output="screen" /> -->
 
 
   <!-- rosbag 파일 재생: 'rosbag'패키지에 있는 'play'파일을 'player'라는 이름으로 노드를 실행한다. -->
@@ -29,18 +29,13 @@
     <if> tag: 'record' 변수값이 true일 경우 해당 노드가 실행된다.
   -->
   <node name="recoder" pkg="rosbag" type="record"
-        args="-o $(find sliding_window)/rosbag/track /usb_cam/image_raw /scan /tf" if="$(arg record)" />
+        args="-o $(find sliding_window)/rosbag/track /usb_cam/image_raw" if="$(arg record)" />
         <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -o $(find sliding_window)/rosbag/track /usb_cam/image_raw" if="$(arg record)" /> -->
         <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -ajo $(find sliding_window)/rosbag/track" if="$(arg record)" /> -->
 
 
   <!-- xycar_b2 motor -->
-  <!-- <node name="xycar_motor" pkg="xycar_motor" type="xycar_motor_b2.py" output="screen" >
-    <param name="angle_offset" value="0" />
-  </node> -->
-
-  <!-- xycar_lidar motor -->
-  <node name="xycar_motor" pkg="xycar_motor" type="xycar_motor.py" output="screen" >
+  <node name="xycar_motor" pkg="xycar_motor" type="xycar_motor_b2.py" output="screen" >
     <param name="angle_offset" value="0" />
   </node>
 

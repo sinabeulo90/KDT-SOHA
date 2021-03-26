@@ -78,7 +78,7 @@ while not rospy.is_shutdown():
     angle = np.clip(np.sign(motor_angle) * abs_motor_angle, -50, 50)
     speed = get_linear_speed2(angle, 50)
 
-    manager.publish_motor(angle, speed)
+    manager.publish_motor(angle, -speed)
 
     fps_dq.append(datetime.now())
 
