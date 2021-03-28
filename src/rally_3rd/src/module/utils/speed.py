@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 import numpy as np
 
 def decrease_function(angle, max_speed):

@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 import time
 import rospy
 
 from xycar_motor.msg import xycar_motor
-from subscribers.camera_subscriber import CameraSubscriber
-from subscribers.lidar_subscriber import LidarSubscriber
+from module.subscribers.camera import CameraSubscriber
+from module.subscribers.lidar import LidarSubscriber
 
 
 class RosManager():

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 import numpy as np
 
 def get_sliding_window_function(points, thresh_count=15):

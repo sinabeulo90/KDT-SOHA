@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 class MotorInfo():
     def __init__(self, angle=0, speed=0, iterations=1, delay_sec=0):
         self.angle = angle

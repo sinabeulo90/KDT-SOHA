@@ -4,12 +4,13 @@
 import os
 import cv2 as cv
 import numpy as np
-from utils.trackbar import Trackbar
 from collections import deque
+from module.utils.trackbar import Trackbar
 
 
 # 파라미터 폴더 경로
-module_path = os.path.dirname(os.path.join(__file__))
+dir_path = os.path.dirname(os.path.join(__file__))
+module_path = os.path.dirname(dir_path)
 src_path = os.path.dirname(module_path)
 params_dir = os.path.join(src_path, "params", "image_processing")
 
@@ -128,7 +129,7 @@ def get_floodfill(cache, center_x, center_y, scan_width, scan_height, scan_theta
     return cache, visited, dist
 
 
-def sliding_window(frame):
+def get_points_with_sliding_window(frame):
     """
     1. 슬라이딩 윈도우를 진행할 때, 왼쪽/오른쪽 영역을 나눠서 각각 진행한다.
         - 윈도우 너비: tb_sliding_window.getValue("window_width")
@@ -346,7 +347,7 @@ if __name__ == "__main__":
     frame = cv.imread("../cam_tune_screenshot_12.03.2021.png")
     while True:
         processed_frame, explain1 = processing(frame)
-        choosen_left, choosen_right, explain2 = sliding_window(processed_frame)
+        choosen_left, choosen_right, explain2 = get_points_with_sliding_window(processed_frame)
 
         cv.imshow("test1", explain1)
         cv.imshow("test2", explain2)

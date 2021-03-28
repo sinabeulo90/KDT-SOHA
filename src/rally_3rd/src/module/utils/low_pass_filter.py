@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 class LowPassFilter():
     def __init__(self, alpha):
         self.alpha = alpha
