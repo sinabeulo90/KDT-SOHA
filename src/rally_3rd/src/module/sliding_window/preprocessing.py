@@ -57,6 +57,6 @@ def preprocessing_sliding_window(frame):
     # explain_image = cv.cvtColor(binary, cv.COLOR_GRAY2BGR)
     # for pt1, pt2 in zip(roi[:-1], roi[1:]):
     #     cv.line(explain_image, pt1, pt2, (0, 0, 255))
-
+    # cv.imshow("warp", explain_image)
     # return tf_image, explain_image
     return tf_image

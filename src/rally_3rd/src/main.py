@@ -12,6 +12,7 @@ from datetime import datetime
 from module.ros_manager import RosManager
 from handler.stop_line_handler import StopLineHandler
 from handler.sliding_window_handler import SlidingWindowHandler
+from handler.hough_line_handler import HoughLineHandler
 
 fps_dq = deque(maxlen=100)
 
@@ -19,7 +20,11 @@ manager = RosManager()
 
 stop_line_handler = StopLineHandler()           # 정지선 멈춤 처리
 sliding_window_handler = SlidingWindowHandler() # 슬라이딩 윈도우 처리
+hough_line_handler = HoughLineHandler()         # Hough Line 처리
+
+# 책임 연쇄 초기화
 stop_line_handler.set_next(sliding_window_handler)
+# stop_line_handler.set_next(hough_line_handler)
 
 handler = stop_line_handler
 

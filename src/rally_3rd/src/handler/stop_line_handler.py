@@ -19,7 +19,7 @@ class StopLineHandler(AbstractHandler):
             motor_info_list = []
 
             if where == "up":
-                motor_info_list.append(MotorInfo(angle=0, speed=self.speed, iterations=15))
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed, iterations=10))
             motor_info_list.append(MotorInfo(angle=0, speed=0, iterations=30, delay_sec=0.1))
             motor_info_list.append(MotorInfo(angle=0, speed=self.speed*2//3, iterations=20, delay_sec=0.1))
             

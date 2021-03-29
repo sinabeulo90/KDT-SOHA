@@ -44,7 +44,6 @@
     <param name="angle_offset" value="0" />
   </node>
 
-
   <!-- usb_cam -->
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
     <param name="video_device"     value="/dev/videoCAM"                                />
@@ -88,8 +87,7 @@
   </node>
 
   <!-- ultrasonic -->
-  <!-- <node pkg="xycar_ultrasonic" type="xycar_ultrasonic.py" name="xycar_ultrasonic" output="screen" /> -->
-
+  <node pkg="xycar_ultrasonic" type="xycar_ultrasonic.py" name="xycar_ultrasonic" output="screen" />
 
   <!-- 9dof IMU -->
   <!-- <node pkg="xycar_imu" type="9dof_imu_node.py" name="xycar_imu" output="screen">

@@ -16,8 +16,8 @@ def get_sliding_window_function(points, thresh_count=15):
     xs = np.array(xs)
     ys = np.array(ys)
 
-    y0 = np.polyfit(ys, xs, 2)
-    result_f = np.poly1d(y0)
+    x0 = np.polyfit(ys, xs, 2)
+    result_f = np.poly1d(x0)
     return True, result_f
 
 
@@ -36,6 +36,11 @@ def get_linear_steering_angle1(angle):
 
 def get_linear_steering_angle2(angle):
     return 30 * np.tanh(0.049 * (angle - 23.5)) + 24.4
+
+
+def get_linear_transform(func, delta_x, delta_y):
+    a, b, c = func.c
+    return func + [0, -2*a*delta_x, a*delta_x**2 - b*delta_x + c + delta_y]
 
 
 if __name__ == "__main__":
