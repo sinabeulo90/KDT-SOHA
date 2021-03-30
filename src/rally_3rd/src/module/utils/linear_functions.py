@@ -40,7 +40,7 @@ def get_linear_steering_angle2(angle):
 
 def get_linear_transform(func, delta_x, delta_y):
     a, b, c = func.c
-    return func + [0, -2*a*delta_x, a*delta_x**2 - b*delta_x + c + delta_y]
+    return func + [0, -2*a*delta_x, a*delta_x**2 - b*delta_x + delta_y]
 
 
 if __name__ == "__main__":

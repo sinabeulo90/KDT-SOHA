@@ -358,40 +358,26 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
     rel_x_ratio: 1에 가까울 수록, 미래의 조향각을 더 일찍 적용
         - 속도가 빠를 수록, 1에 가까워야 한다.
     """
-    pt1 = None
-    pt2 = None
     height, width = frame.shape[:2]
-
     heading_src = (width // 2, height)
+
     if left_linear_func is None:
-        pt1 = (right_linear_func(scan_height), scan_height)
+        pt = (right_linear_func(height), height)
+        y_rad = np.arctan(right_linear_func.deriv()(height))
+        ver_y_rad = y_rad + np.pi/2
 
-        right_deriv = right_linear_func.deriv()
-        radian1 = np.arctan(right_deriv[0])
-
-        radian2 = radian1 - np.pi/2
-        pt2 = (lane_pixel_length * np.cos(radian2), lane_pixel_length * np.sin(radian2))
-
-        delta_x = pt2[0] - pt1[0]
-        delta_y = pt2[1] - pt1[1]
-        left_linear_func = get_linear_transform(right_linear_func, -delta_y, -delta_x)
+        lane_length = -lane_pixel_length
+        delta_yx = (lane_length*np.sin(ver_y_rad), lane_length*np.cos(ver_y_rad))
+        left_linear_func = get_linear_transform(right_linear_func, delta_yx[1], delta_yx[0])
 
     if right_linear_func is None:
-        pt1 = (left_linear_func(scan_height), scan_height)
-        print("pt1", pt1)
+        pt = (left_linear_func(height), height)
+        y_rad = np.arctan(left_linear_func.deriv()(height))
+        ver_y_rad = y_rad + np.pi/2
 
-        left_deriv = left_linear_func.deriv()
-        radian1 = np.arctan(left_deriv[0])
-        print("degrees1:", np.degrees(radian1))
-
-        radian2 = radian1 - np.pi/2
-        pt2 = (pt1[0] + lane_pixel_length * np.cos(radian2), pt1[1] + lane_pixel_length * np.sin(radian2))
-        print("degrees2:", np.degrees(radian2))
-        print("pt2", pt2)
-        
-        delta_x = pt2[0] - pt1[0]
-        delta_y = pt2[1] - pt1[1]
-        right_linear_func = get_linear_transform(left_linear_func, delta_y, delta_x)
+        lane_length = lane_pixel_length
+        delta_yx = (lane_length*np.sin(ver_y_rad), lane_length*np.cos(ver_y_rad))
+        right_linear_func = get_linear_transform(left_linear_func, delta_yx[1], delta_yx[0])
 
     linear_func = (left_linear_func + right_linear_func) / 2.0
 
@@ -408,32 +394,34 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
     # """
     # Explain Image
     # """
-    explain_image = frame
+    frame_bgr = frame
     if frame.ndim == 2:
-        explain_image = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+        frame_bgr = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+    explain_image = frame_bgr
+    # explain_image = np.zeros((800, 800, 3), dtype=np.uint8)
+    # explain_image[0:height, 0:width] = frame_bgr
+    # ys = np.linspace(0, 1000, num=1000, endpoint=True)
 
-    ys = np.linspace(-1000, 1000, num=explain_image.shape[0]*2, endpoint=True)
+    ys = np.linspace(0, height, num=explain_image.shape[0]*2, endpoint=True)
     xs = left_linear_func(ys)
     for x, y in zip(xs, ys):
         if in_range(x, y, explain_image):
             point = tuple(rint([x, y]))
             cv.circle(explain_image, point, 3, (0, 255, 255), -1)
-    if pt1:
-        cv.circle(explain_image, tuple(rint(pt1)), 10, (0, 0, 255), -1)
-        cv.circle(explain_image, tuple(rint(pt2)), 10, (255, 0, 0), -1)
 
     xs = right_linear_func(ys)
     for x, y in zip(xs, ys):
         if in_range(x, y, explain_image):
             point = tuple(rint([x, y]))
             cv.circle(explain_image, point, 3, (0, 255, 255), -1)
+
+    xs = linear_func(ys)
+    for x, y in zip(xs, ys):
+        if in_range(x, y, explain_image):
+            point = tuple(rint([x, y]))
+            cv.circle(explain_image, point, 3, (0, 0, 255), -1)
+
     cv.imshow("explain", explain_image)
-    # xs = linear_func(ys)
-    # for x, y in zip(xs, ys):
-    #     if in_range(x, y, explain_image):
-    #         point = tuple(rint([x, y]))
-    #         cv.circle(explain_image, point, 3, (0, 0, 255), -1)
-    # cv.imshow("explain", explain_image)
     cv.waitKey(1)
 
     # rel_x_ratio 적용된 새로운 heading 계산
