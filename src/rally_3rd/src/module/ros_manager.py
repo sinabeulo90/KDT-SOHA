@@ -5,6 +5,7 @@ import time
 import rospy
 
 from xycar_motor.msg import xycar_motor
+# from xycar_msgs.msg import xycar_motor
 from module.subscribers.camera import CameraSubscriber
 from module.subscribers.lidar import LidarSubscriber
 from module.subscribers.ultrasonic import UltrasonicSubscriber
@@ -30,7 +31,7 @@ class RosManager():
 
 
     def get_lidar(self):
-        return self.lidar_sub.get()
+        return self.lidar_sub.get(), self.lidar_sub.get_param()
 
     
     def get_ultrasonic(self):

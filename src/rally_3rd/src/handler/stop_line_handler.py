@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from handler import AbstractHandler
 from module.infos.motor_info import MotorInfo
 from module.stop_line.preprocessing import preprocessing_stopline

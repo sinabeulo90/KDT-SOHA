@@ -45,12 +45,12 @@ class ParkingBehavior():
     def _stage_1_1(self):
         # 초기 주차 방향 및 자리를 맞춰주는 부분(1단계: 직진)
         # substage1 for going forward for distance1 mm
+        print("stage_1_1")
         speed = 20
         distance = 400
         cycle = distance // speed
 
         for _ in range(cycle):
-            print("stage_1")
             angle = 0
             speed = 20
             yield False, angle, speed
@@ -63,12 +63,12 @@ class ParkingBehavior():
     def _stage_1_2(self):
         # 초기 주차 방향 및 자리를 맞춰주는 부분(2단계: 왼쪽 꺽기)
         # substage2 for going left for distance2 mm
+        print("stage_1_2")
         speed = 20
         distance = 400
         cycle = distance // speed
 
         for _ in range(cycle):
-            print("stage_2")
             angle = -50
             speed = 20
             yield False, angle, speed
@@ -81,13 +81,13 @@ class ParkingBehavior():
     def _stage_1_3(self):
         # 초기 주차 방향 및 자리를 맞춰주는 부분(3단계: 후진)
         # substage3 for going backward for distance3 mm
+        print("stage_1_3")
         speed = -20
         distance = 600
-        cycle = distance // speed
+        cycle = distance // abs(speed)
 
         for _ in range(cycle):
-            print("stage_3")
-            angle = 10
+            angle = 5
             speed = -20
             yield False, angle, speed
 
@@ -97,6 +97,7 @@ class ParkingBehavior():
         
 
     def _stage_2(self):
+        print("stage_2")
         # 초음파 센서를 이용하여 최대 후진(장애물 고려)
         # stage 2 for going backward
         backward_info = UltrasonicInfo()
@@ -109,6 +110,7 @@ class ParkingBehavior():
         forward_info.back_right = 10
 
         while True:
+            print("main ultrasonic", self.ultrasonic_info)
             if self.ultrasonic_info.back_middle < backward_info.back_middle    \
             or self.ultrasonic_info.back_right < backward_info.back_right:
                 if self.ultrasonic_info.back_left < forward_info.back_left       \
@@ -124,7 +126,7 @@ class ParkingBehavior():
                 
             # exception
             elif self.ultrasonic_info.back_left < forward_info.back_left  \
-                or self.ultrasonic_info.back_middle < forward_info.back_middle:
+            or self.ultrasonic_info.back_middle < forward_info.back_middle:
                     angle = 0
                     speed = 0
                     yield True, angle, speed
@@ -136,18 +138,19 @@ class ParkingBehavior():
 
 
     def _stage_3(self):
+        print("stage_3")
         # 전방 AR만 이용해서 자리맞추면서 주차
         # stage 3 for heading AR tag
         value_for_ar = 54
 
         while True:
-            if self.ar_info2.z > value_for_ar:
-                print("stage 3 ", self.ar_info2.pitch, self.ar_info2.x, self.ar_info2.z)
-                angle = self.ar_info2.x + 9
+            if self.ar_info2.dz > value_for_ar:
+                print("stage 3 ", self.ar_info2.pitch, self.ar_info2.dx, self.ar_info2.dz)
+                angle = self.ar_info2.dx + 9
                 speed = 17
                 yield False, angle, speed
             # exception
-            elif self.arData["DZ"] == 0:
+            elif self.ar_info2.dz == 0:
                 angle = 50
                 speed = 15
                 yield False, angle, speed
@@ -158,6 +161,7 @@ class ParkingBehavior():
                 
 
     def _detect(self):
+        print("detect")
         # weights for angle
         k1 = 1.0
         k2 = 2.0
@@ -168,14 +172,14 @@ class ParkingBehavior():
                     print("=======================")
                     print("AR1 found")
                     print("pitch : " + str(round(self.ar_info1.pitch, 1)))
-                    print(" x : " + str(self.ar_info1.x))
-                    print(" z : " + str(self.ar_info1.z))
+                    print(" x : " + str(self.ar_info1.dx))
+                    print(" z : " + str(self.ar_info1.dz))
                 if self.ar_info2:
                     print("=======================")
                     print("AR2 found")
                     print("pitch : " + str(round(self.ar_info2.pitch, 1)))
-                    print(" x : " + str(self.ar_info2.x))
-                    print(" z : " + str(self.ar_info2.z))
+                    print(" x : " + str(self.ar_info2.dx))
+                    print(" z : " + str(self.ar_info2.dz))
 
                 if self.ar_info1:
                     angle = 0
@@ -185,13 +189,13 @@ class ParkingBehavior():
                 # 처음 2번 AR 감지되고 나서, 초기값 세팅
                 if self.ar_info2:
                     # exception
-                    if ar_info2.z == 0:
+                    if self.ar_info2.dz == 0:
                         angle = 0
                         speed = 23
                         yield False, angle, speed
 
                     # go to stage 1
-                    if 0 < self.ar_info2.z < 70:
+                    if 0 < self.ar_info2.dz < 70:
                         print("===Stage1===")
                         angle = 0
                         speed = 0
@@ -199,7 +203,7 @@ class ParkingBehavior():
 
                     """중요"""
                     # self.angle = k1 * math.atan((max(self.xs) - 50) / max(self.zs)) + self.pitch * k2
-                    angle = (self.ar_info2.x - 55) * k1 + self.ar_info2.pitch * k2  # better working
+                    angle = (self.ar_info2.dx - 55) * k1 + self.ar_info2.pitch * k2  # better working
                     speed = 23
                     yield False, angle, speed
 

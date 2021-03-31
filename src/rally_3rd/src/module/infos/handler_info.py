@@ -4,7 +4,10 @@
 class HandlerInfo():
     image = None
     lidar_info = None
+    lidar_param = None
     ultrasonic_info = None
     ar_info1 = None
     ar_info2 = None
-    laps_count=0
+    laps_count = 0
+    speed = None
+    is_done = False

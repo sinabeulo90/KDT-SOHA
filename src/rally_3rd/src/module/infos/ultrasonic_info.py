@@ -23,3 +23,9 @@ class UltrasonicInfo():
             self.back_right     = None
             self.back_middle    = None
             self.back_left      = None
+
+
+    def __repr__(self):
+        if self.left:
+            return "BL {} | BM {} | BR {}".format(self.back_left, self.back_middle, self.back_right)
+        return ""

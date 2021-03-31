@@ -29,7 +29,7 @@
     <if> tag: 'record' 변수값이 true일 경우 해당 노드가 실행된다.
   -->
   <node name="recoder" pkg="rosbag" type="record"
-        args="-o $(find sliding_window)/rosbag/track /usb_cam/image_raw /scan /tf" if="$(arg record)" />
+        args="-o /home/$(env USER)/Desktop/test.bag /usb_cam/image_raw /ar_pose_marker /scan /tf" if="$(arg record)" />
         <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -o $(find sliding_window)/rosbag/track /usb_cam/image_raw" if="$(arg record)" /> -->
         <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -ajo $(find sliding_window)/rosbag/track" if="$(arg record)" /> -->
 
@@ -55,7 +55,7 @@
 
   <!-- ar tag -->
   <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
-    <param name="marker_size"                type="double" value="9.0" />
+    <param name="marker_size"                type="double" value="16.0" />
     <param name="max_new_marker_error"       type="double" value="0.05" />
     <param name="max_track_error"            type="double" value="0.05" />
     <param name="output_frame"               type="string" value="usb_cam" />
