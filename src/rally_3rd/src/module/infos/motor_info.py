@@ -10,5 +10,5 @@ class MotorInfo():
 
 
     def __repr__(self):
-        return "angle {: >4.1f} | speed {: >4.1f} | iterations {: >2d} | delay {: >2.1f} sec".format(
+        return "angle {: >5.1f} | speed {: >4.1f} | iterations {: >2d} | delay {: >2.1f} sec".format(
                 self.angle, self.speed, self.iterations, self.delay_sec)

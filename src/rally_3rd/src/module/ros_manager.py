@@ -7,6 +7,8 @@ import rospy
 from xycar_motor.msg import xycar_motor
 from module.subscribers.camera import CameraSubscriber
 from module.subscribers.lidar import LidarSubscriber
+from module.subscribers.ultrasonic import UltrasonicSubscriber
+from module.subscribers.ar import ARSubscriber
 
 
 class RosManager():
@@ -16,6 +18,8 @@ class RosManager():
         self.motor_pub = rospy.Publisher("xycar_motor", xycar_motor, queue_size=1)
         self.camera_sub = CameraSubscriber()
         self.lidar_sub = LidarSubscriber()
+        self.ultrasonic_sub = UltrasonicSubscriber()
+        self.ar_sub = ARSubscriber()
 
         rospy.init_node("driver")
         self.rate = rospy.Rate(10)
@@ -23,6 +27,18 @@ class RosManager():
     
     def get_image(self):
         return self.camera_sub.get()
+
+
+    def get_lidar(self):
+        return self.lidar_sub.get()
+
+    
+    def get_ultrasonic(self):
+        return self.ultrasonic_sub.get()
+
+
+    def get_ar(self):
+        return self.ar_sub.get_parking_sign(), self.ar_sub.get_parking_line()
 
 
     def publish_motor(self, motor_infos):
@@ -44,8 +60,6 @@ class RosManager():
                 self.motor_pub.publish(self.motor_msg)
                 self.rate.sleep()
                 time.sleep(info.delay_sec)
-
-            
 
             
             

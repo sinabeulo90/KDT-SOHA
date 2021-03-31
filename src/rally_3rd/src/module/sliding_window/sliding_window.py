@@ -353,7 +353,7 @@ def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0,
     return steering_deg
 
 
-def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func, frame, scan_height, rel_x_ratio=1.0, lane_pixel_length=375):
+def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func, frame, lane_pixel_length=1000):
     """
     rel_x_ratio: 1에 가까울 수록, 미래의 조향각을 더 일찍 적용
         - 속도가 빠를 수록, 1에 가까워야 한다.
@@ -381,15 +381,16 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
 
     linear_func = (left_linear_func + right_linear_func) / 2.0
 
-    heading_src = (linear_func(height), height)
-    heading_dst = (linear_func(scan_height), scan_height)
+    heading_src = (width/2, height)
+    heading_dst = (linear_func(height), height)
 
     # x ratio 적용
-    heading_rel = ((heading_dst[0] - heading_src[0])*rel_x_ratio, heading_dst[1] - heading_src[1])
-    heading_rad = np.arctan2(heading_rel[1], heading_rel[0])
+    heading_rel = (heading_dst[0] - heading_src[0], heading_dst[1] - heading_src[1])
+    # heading_rad = np.arctan2(heading_rel[1], heading_rel[0])
     
-    heading_deg = np.degrees(heading_rad)
-    steering_deg = heading_deg + 90
+    steering_deg = heading_rel[0] / lane_pixel_length * 50
+    # heading_deg = np.degrees(heading_rad)
+    # steering_deg = heading_deg + 90
 
     # """
     # Explain Image
@@ -420,7 +421,8 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
         if in_range(x, y, explain_image):
             point = tuple(rint([x, y]))
             cv.circle(explain_image, point, 3, (0, 0, 255), -1)
-
+    cv.line(explain_image, tuple(rint(heading_src)), tuple(rint(heading_dst)), (255, 0, 0), 40)
+    
     cv.imshow("explain", explain_image)
     cv.waitKey(1)
 

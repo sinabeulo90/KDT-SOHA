@@ -3,8 +3,8 @@
 
 import rospy
 
-import numpy as np
 import cv2 as cv
+import numpy as np
 
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image, CameraInfo

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 from handler import AbstractHandler
-from motor_info import MotorInfo
+from module.infos.motor_info import MotorInfo
 from module.utils.linear_functions import *
 from module.utils.discreate_filter import DiscreateFilter
 from module.sliding_window.preprocessing import preprocessing_sliding_window
@@ -16,7 +16,9 @@ class SlidingWindowHandler(AbstractHandler):
         self.filter_deg = DiscreateFilter(f_cut=4000, freq=10000)
         
 
-    def handle(self, frame):
+    def handle(self, handler_info):
+        frame = handler_info.image
+        
         # 영상 전처리
         preprcessed_frame = preprocessing_sliding_window(frame)
 

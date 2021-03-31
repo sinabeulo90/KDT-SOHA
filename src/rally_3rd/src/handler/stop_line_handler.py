@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from handler import AbstractHandler
-from motor_info import MotorInfo
+from module.infos.motor_info import MotorInfo
 from module.stop_line.preprocessing import preprocessing_stopline
 from module.stop_line.stop_line import is_detect_crossline
 
@@ -11,7 +11,8 @@ class StopLineHandler(AbstractHandler):
         self.speed = speed
 
 
-    def handle(self, frame):
+    def handle(self, handler_info):
+        frame = handler_info.image
         preprcessed_frame = preprocessing_stopline(frame, thres_L=180)
         ret, where = is_detect_crossline(preprcessed_frame, self.speed)
 
@@ -25,4 +26,4 @@ class StopLineHandler(AbstractHandler):
             
             return motor_info_list
         else:
-            return self._next_handler.handle(frame)
+            return self._next_handler.handle(handler_info)

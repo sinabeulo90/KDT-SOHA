@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from handler import AbstractHandler
-from motor_info import MotorInfo
+from module.infos.motor_info import MotorInfo
 from module.utils.discreate_filter import DiscreateFilter
 from module.hough_line.preprocessing import preprocessing_hough_line
 from module.hough_line.hough_line import get_steering_radian
@@ -12,7 +12,9 @@ class HoughLineHandler(AbstractHandler):
         self.filter_deg = DiscreateFilter(f_cut=3000, freq=20000, num_of_signal=1)
 
 
-    def handle(self, frame):
+    def handle(self, handler_info):
+        frame = handler_info.image
+        
         # 영상 전처리
         preprcessed_frame = preprocessing_hough_line(frame)
 
