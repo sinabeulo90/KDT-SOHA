@@ -294,7 +294,7 @@ def get_points_with_sliding_window(frame):
     return choosen_left, choosen_right
 
 
-def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0, comment=None):
+def get_steering_angle_from_linear_function_curve(linear_func, frame, rel_x_ratio=1.0, comment=None):
     """
     rel_x_ratio: 1에 가까울 수록, 미래의 조향각을 더 일찍 적용
         - 속도가 빠를 수록, 1에 가까워야 한다.
@@ -353,9 +353,59 @@ def get_steering_angle_from_linear_function(linear_func, frame, rel_x_ratio=1.0,
     return steering_deg
 
 
-def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func, frame, lane_pixel_length=470):
+
+def get_steering_angle_from_linear_function_curve2(linear_func, frame):
     height, width = frame.shape[:2]
-    scan_height = height / 4
+    scan_height = height // 4 * 3
+
+    # x ratio 적용
+    grad = linear_func.deriv()(scan_height)
+    rad = np.arctan(grad)
+    deg = np.degrees(rad)
+
+    steering_deg = -deg
+
+    # """
+    # Explain Image
+    # """
+    # explain_image = frame
+    # if frame.ndim == 2:
+    #     explain_image = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+
+    # ys = np.linspace(0, height, num=height, endpoint=True)
+    # xs = left_linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 3, (0, 255, 255), -1)
+    # cv.imshow("explain", explain_image)
+    # xs = right_linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 3, (0, 255, 255), -1)
+    # xs = linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 3, (0, 0, 255), -1)
+    # cv.imshow("explain", explain_image)
+    # cv.waitKey(1)
+
+    # rel_x_ratio 적용된 새로운 heading 계산
+    # heading_src = tuple(rint([width//2, height]))
+    # heading_dst = tuple(rint([width//2 - (height-scan_height)/np.tan(heading_rad), scan_height]))
+
+    # cv.circle(explain_image, heading_src, 1, (0, 0, 255), -1)
+    # cv.circle(explain_image, heading_dst, 1, (0, 0, 255), -1)
+    # cv.line(explain_image, heading_src, heading_dst, (0, 0, 255), 2)
+    # return steering_deg, explain_image
+    return steering_deg
+
+
+def get_steering_angle_from_linear_function_center(left_linear_func, right_linear_func, frame, lane_pixel_length=470):
+    height, width = frame.shape[:2]
+    scan_height = height / 4 * 3
     heading_src = (width // 2, height)
 
     if left_linear_func is None:
@@ -380,7 +430,7 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
 
     heading_src = (width/2, height)
     # heading_dst = (linear_func(0), 0)
-    heading_dst = (linear_func(scan_height), scan_height)
+    heading_dst = (linear_func(scan_height), -2*height)
 
     # x ratio 적용
     heading_rel = (heading_dst[0] - heading_src[0], heading_dst[1] - heading_src[1])
@@ -391,6 +441,96 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
     steering_deg = heading_deg + 90
     # print(heading_src, heading_dst, heading_rel, heading_rad, heading_deg, heading_deg + 90)
     # print(linear_func.c[0], heading_rad, heading_deg)
+
+    # """
+    # Explain Image
+    # """
+    # frame_bgr = frame
+    # if frame.ndim == 2:
+    #     frame_bgr = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+    # explain_image = frame_bgr
+    # explain_image = np.zeros((800, 800, 3), dtype=np.uint8)
+    # explain_image[0:height, 0:width] = frame_bgr
+    # ys = np.linspace(0, 1000, num=1000, endpoint=True)
+
+    # ys = np.linspace(0, height, num=explain_image.shape[0]*2, endpoint=True)
+    # xs = left_linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 1, (0, 255, 255), -1)
+
+    # xs = right_linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 1, (0, 255, 255), -1)
+
+    # xs = linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 1, (0, 0, 255), -1)
+    # cv.line(explain_image, tuple(rint(heading_src)), tuple(rint(heading_dst)), (255, 0, 0), 10)
+    
+    # cv.imshow("explain", explain_image)
+    # cv.waitKey(1)
+
+    # rel_x_ratio 적용된 새로운 heading 계산
+    # heading_src = tuple(rint([width//2, height]))
+    # heading_dst = tuple(rint([width//2 - (height-scan_height)/np.tan(heading_rad), scan_height]))
+
+    # cv.circle(explain_image, heading_src, 1, (0, 0, 255), -1)
+    # cv.circle(explain_image, heading_dst, 1, (0, 0, 255), -1)
+    # cv.line(explain_image, heading_src, heading_dst, (0, 0, 255), 2)
+    # return steering_deg, explain_image
+    return steering_deg
+
+
+def get_steering_angle_from_linear_function_center2(left_linear_func, right_linear_func, frame, lane_pixel_length=470, speed=50, stanley_k=100):
+    height, width = frame.shape[:2]
+    scan_height = height // 4 * 3
+
+    if left_linear_func is None:
+        pt = (right_linear_func(height), height)
+        y_rad = np.arctan(right_linear_func.deriv()(height))
+        ver_y_rad = y_rad + np.pi/2
+
+        lane_length = -lane_pixel_length
+        delta_yx = (lane_length*np.sin(ver_y_rad), lane_length*np.cos(ver_y_rad))
+        left_linear_func = get_linear_transform(right_linear_func, delta_yx[1], delta_yx[0])
+
+    if right_linear_func is None:
+        pt = (left_linear_func(height), height)
+        y_rad = np.arctan(left_linear_func.deriv()(height))
+        ver_y_rad = y_rad + np.pi/2
+
+        lane_length = lane_pixel_length
+        delta_yx = (lane_length*np.sin(ver_y_rad), lane_length*np.cos(ver_y_rad))
+        right_linear_func = get_linear_transform(left_linear_func, delta_yx[1], delta_yx[0])
+
+    linear_func = (left_linear_func + right_linear_func) / 2.0
+
+    # Stanely method 적용
+    cte = linear_func(height) - width/2
+    cte_term = np.arctan(stanley_k * cte / speed)
+
+    deriv = linear_func.deriv()
+    grad = deriv(height)
+    rad = np.arctan(grad)
+    phi_term = np.degrees(rad)
+
+    steering_deg = -(cte_term + phi_term)
+    return steering_deg
+
+
+    # x ratio 적용
+    grad = linear_func.deriv()(scan_height)
+    rad = np.arctan(grad)
+    deg = np.degrees(rad)
+
+    steering_deg = -deg
+
 
     # """
     # Explain Image
@@ -435,8 +575,6 @@ def get_steering_angle_from_linear_function2(left_linear_func, right_linear_func
     # cv.line(explain_image, heading_src, heading_dst, (0, 0, 255), 2)
     # return steering_deg, explain_image
     return steering_deg
-
-
 
 
 

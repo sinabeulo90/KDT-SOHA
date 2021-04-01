@@ -122,7 +122,7 @@ class ParkingBehavior():
 
                 angle = -30
                 speed = -17
-                yield False, -30, -17
+                yield False, -50, -17
                 
             # exception
             elif self.ultrasonic_info.back_left < forward_info.back_left  \
@@ -206,7 +206,7 @@ class ParkingBehavior():
                     # self.angle = k1 * math.atan((max(self.xs) - 50) / max(self.zs)) + self.pitch * k2
                     angle = (self.ar_info2.dx - 65) * k1 + self.ar_info2.pitch * k2  # better working
                     speed = 23
-                    yield False, angle, speed
+                    yield False, angle - 5, speed
 
             angle = 0
             speed = 23

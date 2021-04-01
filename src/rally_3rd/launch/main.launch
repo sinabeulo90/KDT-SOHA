@@ -29,7 +29,7 @@
     <if> tag: 'record' 변수값이 true일 경우 해당 노드가 실행된다.
   -->
   <node name="recoder" pkg="rosbag" type="record"
-        args="-o /home/$(env USER)/Desktop/test.bag /usb_cam/image_raw /ar_pose_marker /scan /tf" if="$(arg record)" />
+        args="-o /home/$(env USER)/Desktop/test.bag /usb_cam/image_raw /ar_pose_marker /scan /xycar_ultrasonic" if="$(arg record)" />
         <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -o $(find sliding_window)/rosbag/track /usb_cam/image_raw" if="$(arg record)" /> -->
         <!-- args="-x '(.*)/theora | (.*)/theora/(.*) | (.*)/compressedDepth' -ajo $(find sliding_window)/rosbag/track" if="$(arg record)" /> -->
 

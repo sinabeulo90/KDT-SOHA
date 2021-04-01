@@ -39,8 +39,10 @@ stop_line_handler.set_next(sliding_window_handler)  # 정지선 멈춤 ---> 슬�
 handler = ar_parking_handler
 prev_speed = 30
 prev_angle = 0
-laps_count = 2
+laps_count = 0
 is_parking = False
+
+raw_input("준비~!")
 
 while not rospy.is_shutdown():
     ret, frame = manager.get_image()
@@ -89,7 +91,7 @@ while not rospy.is_shutdown():
 
     # value = exposure.get_exposure(frame)
     # print "fps: {:>1.0f} | value: {:d} | {:s}".format(fps, value, motor_info)
-    print "fps: {:>1.0f} | {:s}".format(fps, motor_info)
+    # print "fps: {:>1.0f} | {:s}".format(fps, motor_info)
 
     """
     """

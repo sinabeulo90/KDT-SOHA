@@ -21,10 +21,14 @@ class StopLineHandler(AbstractHandler):
         if ret:
             motor_info_list = []
 
-            cycle = (600-where)//48
-            motor_info_list.append(MotorInfo(angle=prev_angle, speed=self.speed*2//3, iterations=cycle, delay_sec=0.05))
-            motor_info_list.append(MotorInfo(angle=prev_angle, speed=0, iterations=60, delay_sec=0.1)) # stop for 6 sec
-            # motor_info_list.append(MotorInfo(angle=0, speed=self.speed*2//3, iterations=20, delay_sec=0.1))
+            a = 50
+            b = 50
+            cycle = int(round((600 - where + a) / b))
+
+            motor_info_list.append(MotorInfo(angle=0, speed=self.speed*1//2, iterations=cycle, delay_sec=0.05))
+            motor_info_list.append(MotorInfo(angle=0, speed=-1, iterations=2, delay_sec=0.05))
+            motor_info_list.append(MotorInfo(angle=0, speed=0, iterations=58, delay_sec=0.1)) # stop for 6 sec
+            motor_info_list.append(MotorInfo(angle=prev_angle/10, speed=self.speed, iterations=20, delay_sec=0.1))
             handler_info.laps_count += 1
             print("laps:",handler_info.laps_count)
             

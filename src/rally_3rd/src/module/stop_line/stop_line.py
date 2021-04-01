@@ -63,20 +63,20 @@ def is_detect_crossline(frame, speed, delta_y=100, cross_count_thresh=14):
 
         if len(num)>cross_count_thresh:
             j = 0
-            y_up, y_down = y_detect_line-5, y_detect_line+5
+            y_up, y_down = y_detect_line-1, y_detect_line+1
 
             while y_down<600:
                 kkk = get_cross_value_count(frame, y_down)
                 if len(kkk) < cross_count_thresh:
                     break
-                y_down +=5
+                y_down +=1
             while y_up>0:
                 kkk = get_cross_value_count(frame, y_up)
                 if len(kkk) < cross_count_thresh:
                     break
-                y_up -= 5
+                y_up -= 1
             if y_down - y_up >length_tresh:
-                print("range:",y_up,y_down)
+                print("range:",y_up,y_down,"list",num)
                 return True, y_down
 
     #print(lens_counts)

@@ -8,9 +8,11 @@ from module.lidar_drive.transform_cloud_points import TrnasformCP
 from module.utils.linear_functions import *
 from module.utils.discreate_filter import DiscreateFilter
 from module.sliding_window.preprocessing import preprocessing_sliding_window
-from module.sliding_window.sliding_window import get_points_with_sliding_window,            \
-                                                get_steering_angle_from_linear_function,    \
-                                                get_steering_angle_from_linear_function2
+from module.sliding_window.sliding_window import get_points_with_sliding_window,                    \
+                                                get_steering_angle_from_linear_function_curve,      \
+                                                get_steering_angle_from_linear_function_curve2,     \
+                                                get_steering_angle_from_linear_function_center,     \
+                                                get_steering_angle_from_linear_function_center2
 
 
 class SlidingWindowHandler(AbstractHandler):
@@ -46,10 +48,13 @@ class SlidingWindowHandler(AbstractHandler):
         if (ret_left and ret_right) \
         or (ret_left and abs(linear_func_left.c)[1] < 0.1 and self.is_straight_line(linear_func_left, preprcessed_frame))    \
         or (ret_right and abs(linear_func_right.c)[1] < 0.1 and self.is_straight_line(linear_func_right, preprcessed_frame)):
-            motor_angle = self.get_steering_angle2(preprcessed_frame, linear_func_left, linear_func_right)
+            # motor_angle = self.get_steering_angle_center(preprcessed_frame, linear_func_left, linear_func_right)
+            motor_angle = self.get_steering_angle_center2(preprcessed_frame, linear_func_left, linear_func_right)
+            motor_angle /= 2.0
         # 한쪽 차선이 있을 경우, 커브 구간으로 생각하고 진행
         else:
-            motor_angle = self.get_steering_angle1(preprcessed_frame, linear_func_left, linear_func_right)
+            # motor_angle = self.get_steering_angle_curve(preprcessed_frame, linear_func_left, linear_func_right)
+            motor_angle = self.get_steering_angle_curve2(preprcessed_frame, linear_func_left, linear_func_right)
 
         # 설정된 2차함수에 따라 angle 값을 새로 계산
         abs_motor_angle = max(0, get_linear_steering_angle2(abs(motor_angle)))
@@ -89,12 +94,34 @@ class SlidingWindowHandler(AbstractHandler):
 
 
     # 한쪽 차선이 있을 경우, 커브 구간으로 생각하고 진행
-    def get_steering_angle1(self, frame, linear_func_left, linear_func_right):
+    def get_steering_angle_curve(self, frame, linear_func_left, linear_func_right):
         # 각 2차함수를 통해 steering angle 계산
         if linear_func_left:
-            steering_angle = get_steering_angle_from_linear_function(linear_func_left, frame, rel_x_ratio=1.2)
+            steering_angle = get_steering_angle_from_linear_function_curve(linear_func_left, frame, rel_x_ratio=1.2)
         elif linear_func_right:
-            steering_angle = get_steering_angle_from_linear_function(linear_func_right, frame, rel_x_ratio=0.8)
+            steering_angle = get_steering_angle_from_linear_function_curve(linear_func_right, frame, rel_x_ratio=0.8)
+        else:
+            steering_angle = self.filter_deg.prev_lpf
+
+        # Low-pass filter를 적용한 steering angle 계산
+        steering_angle = self.filter_deg.get_lpf(steering_angle)[0]
+
+        """
+        Explain Matrix
+        """
+        # vertical_line = np.zeros((explain1.shape[0], 5, 3), dtype=np.uint8)
+        # explain_merge = np.hstack((explain2, vertical_line, explain1))
+        # return steering_angle, explain_merge
+        return steering_angle
+
+
+    # 한쪽 차선이 있을 경우, 커브 구간으로 생각하고 진행
+    def get_steering_angle_curve2(self, frame, linear_func_left, linear_func_right):
+        # 각 2차함수를 통해 steering angle 계산
+        if linear_func_left:
+            steering_angle = get_steering_angle_from_linear_function_curve2(linear_func_left, frame)
+        elif linear_func_right:
+            steering_angle = get_steering_angle_from_linear_function_curve2(linear_func_right, frame)
         else:
             steering_angle = self.filter_deg.prev_lpf
 
@@ -111,13 +138,32 @@ class SlidingWindowHandler(AbstractHandler):
 
 
     # 양쪽 차선이 있을 경우, 중앙 차선으로 가도록 진행
-    def get_steering_angle2(self, frame, linear_func_left, linear_func_right):
+    def get_steering_angle_center(self, frame, linear_func_left, linear_func_right):
         # 각 2차함수를 통해 steering angle 계산
         height, width = frame.shape[:2]
-        scan_height = height // 4 * 3
         
         # 직선 차선일 경우, 중앙차선으로 향하는 angle 계산
-        steering_angle = get_steering_angle_from_linear_function2(linear_func_left, linear_func_right, frame)
+        steering_angle = get_steering_angle_from_linear_function_center(linear_func_left, linear_func_right, frame)
+
+        # Low-pass filter를 적용한 steering angle 계산
+        steering_angle = self.filter_deg.get_lpf(steering_angle)[0]
+
+        """
+        Explain Matrix
+        """
+        # vertical_line = np.zeros((explain1.shape[0], 5, 3), dtype=np.uint8)
+        # explain_merge = np.hstack((explain2, vertical_line, explain1))
+        # return steering_angle, explain_merge
+        return steering_angle
+
+
+    # 양쪽 차선이 있을 경우, 중앙 차선으로 가도록 진행
+    def get_steering_angle_center2(self, frame, linear_func_left, linear_func_right):
+        # 각 2차함수를 통해 steering angle 계산
+        height, width = frame.shape[:2]
+        
+        # 직선 차선일 경우, 중앙차선으로 향하는 angle 계산
+        steering_angle = get_steering_angle_from_linear_function_center2(linear_func_left, linear_func_right, frame)
 
         # Low-pass filter를 적용한 steering angle 계산
         steering_angle = self.filter_deg.get_lpf(steering_angle)[0]
