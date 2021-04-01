@@ -39,7 +39,7 @@ class ParkingBehavior():
                 self.behavior_idx += 1
                 break
             yield is_done, angle, speed
-        yield True, 0, 0
+        yield True, angle, speed
     
             
     def _stage_1_1(self):
@@ -50,13 +50,13 @@ class ParkingBehavior():
         distance = 400
         cycle = distance // speed
 
-        for _ in range(cycle):
+        for _ in range(cycle-1):
             angle = 0
             speed = 20
             yield False, angle, speed
 
-        angle = 0
-        speed = 0
+        # angle = 0
+        # speed = 0
         yield True, angle, speed
 
 
@@ -68,13 +68,13 @@ class ParkingBehavior():
         distance = 400
         cycle = distance // speed
 
-        for _ in range(cycle):
+        for _ in range(cycle-1):
             angle = -50
             speed = 20
             yield False, angle, speed
 
-        angle = 0
-        speed = 0
+        # angle = 0
+        # speed = 0
         yield True, angle, speed
 
 
@@ -86,13 +86,13 @@ class ParkingBehavior():
         distance = 600
         cycle = distance // abs(speed)
 
-        for _ in range(cycle):
+        for _ in range(cycle-1):
             angle = 5
             speed = -20
             yield False, angle, speed
 
-        angle = 0
-        speed = 0
+        # angle = 0
+        # speed = 0
         yield True, angle, speed
         
 
@@ -105,9 +105,9 @@ class ParkingBehavior():
         backward_info.back_right = 65
 
         forward_info = UltrasonicInfo()
-        forward_info.back_left = 10
-        forward_info.back_middle = 30
-        forward_info.back_right = 10
+        forward_info.back_left = 15
+        forward_info.back_middle = 25
+        forward_info.back_right = 15
 
         while True:
             print("main ultrasonic", self.ultrasonic_info)
@@ -146,7 +146,7 @@ class ParkingBehavior():
         while True:
             if self.ar_info2.dz > value_for_ar:
                 print("stage 3 ", self.ar_info2.pitch, self.ar_info2.dx, self.ar_info2.dz)
-                angle = self.ar_info2.dx + 9
+                angle = self.ar_info2.dx #+ 9
                 speed = 17
                 yield False, angle, speed
             # exception
@@ -155,6 +155,7 @@ class ParkingBehavior():
                 speed = 15
                 yield False, angle, speed
             else:
+                print("Parked")
                 angle = 0
                 speed = 0
                 yield True, angle, speed
@@ -203,7 +204,7 @@ class ParkingBehavior():
 
                     """중요"""
                     # self.angle = k1 * math.atan((max(self.xs) - 50) / max(self.zs)) + self.pitch * k2
-                    angle = (self.ar_info2.dx - 55) * k1 + self.ar_info2.pitch * k2  # better working
+                    angle = (self.ar_info2.dx - 60) * k1 + self.ar_info2.pitch * k2  # better working
                     speed = 23
                     yield False, angle, speed
 

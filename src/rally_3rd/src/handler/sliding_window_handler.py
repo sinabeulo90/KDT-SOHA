@@ -22,7 +22,7 @@ class SlidingWindowHandler(AbstractHandler):
         # 장애물 회피
         self.tfcp = None
         self.filter_obs = DiscreateFilter(f_cut=1000, freq=10000)
-        self.filter_obs_vel = DiscreateFilter(f_cut=1000, freq=10000)
+        self.filter_obs_vel = DiscreateFilter(f_cut=2000, freq=10000)
 
 
     def handle(self, handler_info):
@@ -57,7 +57,7 @@ class SlidingWindowHandler(AbstractHandler):
         # 앞에 장애물이 있는 경우
         if lidar_info:
             if self.tfcp is None:
-                self.tfcp = TrnasformCP(lidar_param, K=180 / 3.14 * 1.0)
+                self.tfcp = TrnasformCP(lidar_param)
                 self.tfcp.set_azimuth()
 
             cloud_r, cloud_al = self.tfcp.rm_spherical(lidar_info, 180)
@@ -70,13 +70,14 @@ class SlidingWindowHandler(AbstractHandler):
                 obs_speed = self.filter_obs_vel.get_lpf(speed)[0]
 
                 # angle 값 범위 조정 (-50 ~ 50)
-                abs_motor_angle += obs_angle    # 장애물에 따른 angle 조정
-                angle = np.clip(np.sign(motor_angle) * abs_motor_angle, -50, 50)
+                motor_angle += obs_angle    # 장애물에 따른 angle 조정
+                angle = np.clip(motor_angle, -50, 50)
 
                 # 장애물에 따른 속도 고정
+                print(obs_angle, obs_speed, angle, speed)
                 speed = obs_speed
 
-                return MotorInfo(angle, speed)
+                return MotorInfo(angle, speed), handler_info
 
         # angle 값 범위 조정 (-50 ~ 50)
         angle = np.clip(np.sign(motor_angle) * abs_motor_angle, -50, 50)

@@ -32,7 +32,7 @@ def get_cross_value_count(frame, y):
             value = frame[y][x]
             count = 1
     value_counts.append(count)
-
+    value_counts2 = [i for i in value_counts if i>=3]
     # """
     # Explain Matrix
     # """
@@ -40,18 +40,56 @@ def get_cross_value_count(frame, y):
     # explain_image = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
     # cv.rectangle(explain_image, (0, y-1), (explain_image.shape[1], y+1), (0, 0, 255), 1)
     # cv.imshow("origin" + str(y), explain_image)
-    return value_counts
+    return value_counts2
 
 
-def is_detect_crossline(frame, speed, delta_y=100, cross_count_thresh=12):
+def is_detect_crossline(frame, speed, delta_y=100, cross_count_thresh=14):
     # 정지선 여부를 검사하기 위한 y좌표의 상/하한 계산
     detected_line_up = get_detected_line_y(speed)
     detected_line_down = detected_line_up + delta_y
+    lens_counts = []
+    ys = []
+    cross_count_y0 = get_cross_value_count(frame, 0)
+    lens_counts.append(len(cross_count_y0))
+    height, width = frame.shape[:2]
+    cycles = (height-90)//delta_y
+
+    length_tresh = 40
+    for i in range(cycles):
+        y_detect_line = 90 + i * delta_y
+        num = get_cross_value_count(frame, y_detect_line)
+        lens_counts.append(len(num))
+        ys.append(y_detect_line)
+
+        if len(num)>cross_count_thresh:
+            j = 0
+            y_up, y_down = y_detect_line-5, y_detect_line+5
+
+            while y_down<600:
+                kkk = get_cross_value_count(frame, y_down)
+                if len(kkk) < cross_count_thresh:
+                    break
+                y_down +=5
+            while y_up>0:
+                kkk = get_cross_value_count(frame, y_up)
+                if len(kkk) < cross_count_thresh:
+                    break
+                y_up -= 5
+            if y_down - y_up >length_tresh:
+                print("range:",y_up,y_down)
+                return True, y_down
+
+    #print(lens_counts)
+
+
 
     # 상/하한에서 검출되는 교차되는 value 값의 갯수 계산
     cross_count_up = get_cross_value_count(frame, detected_line_up)
     cross_count_down = get_cross_value_count(frame, detected_line_down)
 
+
+    '''
+    
     # 상단에서 검출되는 갯수 세기
     if len(cross_count_up) > cross_count_thresh:
         print "[STOPLINE] CROSS LINE UP", len(cross_count_up)
@@ -60,8 +98,8 @@ def is_detect_crossline(frame, speed, delta_y=100, cross_count_thresh=12):
     if len(cross_count_down) > cross_count_thresh:
         print "[STOPLINE] CROSS LINE DOWN", len(cross_count_down)
         return True, "down"
-
-    return False, "no"
+    '''
+    return False, 0
 
 
 

@@ -75,8 +75,9 @@ while not rospy.is_shutdown():
     if type(motor_info) != list:
         prev_speed = motor_info.speed
 
-    value = exposure.get_exposure(frame)
-    print "fps: {:>1.0f} | value: {:d} | {:s}".format(fps, value, motor_info)
+    # value = exposure.get_exposure(frame)
+    # print "fps: {:>1.0f} | value: {:d} | {:s}".format(fps, value, motor_info)
+    print "fps: {:>1.0f} | {:s}".format(fps, motor_info)
 
     """
     """

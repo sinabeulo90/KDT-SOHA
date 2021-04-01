@@ -20,16 +20,17 @@ class TrnasformCP():
         self.C_roi_x = 0.931
         self.C_roi_y = 0.931
         self.Offset_roi = 0.350
-        self.Extend_roi = 0.2
+        self.Extend_roi = 0.3
+        self.Extend_roi_away = 0
         self.m_to_PIXEL = 515.58
-        self.K_avoidance = K
+        self.K_avoidance = 180 / 3.14 * 1.2
         ## offset : distance from LIDAR to camera ROI with m unit
         ## C_x, C_y : Width & Height of camera ROI with m unit
         
         self.alphas = []
         self.del_alphas = param[0]
         self.number = param[1]
-        self.speed = 20
+        self.speed = 15
 
         self.check_cartesian_pt = 0
 
@@ -64,14 +65,16 @@ class TrnasformCP():
     def rm_cartesian(self, cartesian, offset=0.0):
         result = np.array([[0],[0],[1]])
         num_car = cartesian.shape[1]
-        saved = [None, None]
+        saved = [cartesian[0,0], cartesian[1,0]]
         for i in range(num_car):
             temp = cartesian[:,i]
-            if temp is saved:
+            if np.abs(temp[0] - saved[0]) < 0.001 or np.abs(temp[1] - saved[1]) < 0.001:
+                # print("removed", temp)
                 continue
             else:
                 saved = temp
-            if temp[0] > 0 and temp[0] < self.C_roi_x and temp[1] > 0 and temp[1] < self.C_roi_y + self.Extend_roi:
+
+            if temp[0] > 0 and temp[0] < self.C_roi_x and temp[1] > 0 - self.Extend_roi_away and temp[1] < self.C_roi_y + self.Extend_roi:
                 result = np.append(result, np.array([[temp[0]],[temp[1]],[temp[2]]]), axis=1)
         return result.shape[1]-1, self.m_to_PIXEL*result[:,1:]
     
@@ -120,7 +123,7 @@ class TrnasformCP():
             dist_right = right_x - temp_x
             center = left_x + (right_x - left_x) / 2
             if dist_left > 0 and dist_right > 0:
-                # print("pts", temp_x,temp_y)     
+                print("pts", temp_x,temp_y)     
                 if temp_x < center:
                     num_pt[0] += 1
                     cv2.circle(image, (int(temp_x), int(temp_y)), 5, (255,0,0), -1)
@@ -133,7 +136,7 @@ class TrnasformCP():
                     if dist_right > max_dist_right:
                         max_dist_right = dist_right
                         max_ptset_right = (int(temp_x), int(temp_y))
-        # print(num_pt)
+        print("numpt", num_pt)
         ## obstacle in left side
         if num_pt[0] > num_pt[1]:
             if not max_ptset_right == None:      
@@ -168,6 +171,7 @@ class TrnasformCP():
         cv2.circle(image, (int(target[0]), int(target[1])), 7, 255, -1)
         print(target)
         angle = self.K_avoidance * slope
+        print(angle)
         # print(angle)
         return angle, image, speed
 

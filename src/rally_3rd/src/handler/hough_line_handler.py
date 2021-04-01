@@ -32,7 +32,7 @@ class HoughLineHandler(AbstractHandler):
 
         # steering angle에 따른 속도 조정
         speed = self._get_speed_by_angle(steering_angle)
-        return MotorInfo(steering_angle, speed)
+        return MotorInfo(steering_angle, speed), handler_info
 
     
     def _get_speed_by_angle(self, angle, cof_v_rev=0.8):

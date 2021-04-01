@@ -50,6 +50,9 @@ def preprocessing_sliding_window(frame):
 
     tf_image = cv.warpPerspective(binary, tf_matrix, (tf_dst_size, tf_dst_size), flags=cv.INTER_LINEAR)
 
+    # blur = cv.GaussianBlur(tf_image, (5, 5), 0)
+    _, binary = cv.threshold(tf_image, 1, 255, cv.THRESH_BINARY)
+
     # """
     # Explain Matrix
     # """
@@ -59,4 +62,5 @@ def preprocessing_sliding_window(frame):
     #     cv.line(explain_image, pt1, pt2, (0, 0, 255))
     # cv.imshow("warp", explain_image)
     # return tf_image, explain_image
-    return tf_image
+    # return tf_image
+    return binary

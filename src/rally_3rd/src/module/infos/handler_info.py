@@ -10,4 +10,3 @@ class HandlerInfo():
     ar_info2 = None
     laps_count = 0
     speed = None
-    is_done = False

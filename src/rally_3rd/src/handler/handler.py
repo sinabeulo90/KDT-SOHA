@@ -40,4 +40,4 @@ class AbstractHandler(Handler):
         if self._next_handler:
             return self._next_handler.handle(request)
 
-        return None
+        return None, None
