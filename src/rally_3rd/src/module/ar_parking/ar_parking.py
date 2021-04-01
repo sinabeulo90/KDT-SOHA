@@ -65,7 +65,7 @@ class ParkingBehavior():
         # substage2 for going left for distance2 mm
         print("stage_1_2")
         speed = 20
-        distance = 400
+        distance = 360
         cycle = distance // speed
 
         for _ in range(cycle-1):
@@ -204,7 +204,7 @@ class ParkingBehavior():
 
                     """중요"""
                     # self.angle = k1 * math.atan((max(self.xs) - 50) / max(self.zs)) + self.pitch * k2
-                    angle = (self.ar_info2.dx - 60) * k1 + self.ar_info2.pitch * k2  # better working
+                    angle = (self.ar_info2.dx - 65) * k1 + self.ar_info2.pitch * k2  # better working
                     speed = 23
                     yield False, angle, speed
 

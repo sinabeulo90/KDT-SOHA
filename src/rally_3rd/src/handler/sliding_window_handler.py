@@ -29,7 +29,7 @@ class SlidingWindowHandler(AbstractHandler):
         frame = handler_info.image
         lidar_info = handler_info.lidar_info
         lidar_param = handler_info.lidar_param
-        prev_speed = handler_info.speed
+        prev_speed = handler_info.prev_speed
         
         # 영상 전처리
         preprcessed_frame = preprocessing_sliding_window(frame)
@@ -83,9 +83,9 @@ class SlidingWindowHandler(AbstractHandler):
         angle = np.clip(np.sign(motor_angle) * abs_motor_angle, -50, 50)
 
         # 설정된 2차함수에 따라, 해당 angle에 대한 speed 값을 새로 계산
-        speed = get_linear_speed2(angle, 35)
+        speed = get_linear_speed2(angle, 50)
         
-        return MotorInfo(angle, speed)
+        return MotorInfo(angle, speed), handler_info
 
 
     # 한쪽 차선이 있을 경우, 커브 구간으로 생각하고 진행

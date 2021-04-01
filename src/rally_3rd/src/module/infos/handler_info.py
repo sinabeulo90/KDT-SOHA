@@ -9,4 +9,6 @@ class HandlerInfo():
     ar_info1 = None
     ar_info2 = None
     laps_count = 0
-    speed = None
+    prev_speed = None
+    prev_angle = None
+    is_parking = False

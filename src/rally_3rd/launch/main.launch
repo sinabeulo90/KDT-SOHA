@@ -65,7 +65,8 @@
 
   <!-- lidar -->
   <node name="ydlidar_node"  pkg="ydlidar_ros"  type="ydlidar_node" output="screen" respawn="false" >
-    <param name="port"         type="string" value="/dev/ttyRPL"/>  
+    <param name="port"         type="string" value="/dev/ttyUSB1"/>  
+    <!-- <param name="port"         type="string" value="/dev/ttyRPL"/>   -->
     <param name="baudrate"         type="int" value="230400"/>  
     <param name="frame_id"     type="string" value="laser_frame"/>
     <param name="resolution_fixed"    type="bool"   value="true"/>

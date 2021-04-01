@@ -30,7 +30,7 @@ class TrnasformCP():
         self.alphas = []
         self.del_alphas = param[0]
         self.number = param[1]
-        self.speed = 15
+        self.speed = 30
 
         self.check_cartesian_pt = 0
 

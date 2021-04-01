@@ -36,8 +36,11 @@ ar_parking_handler.set_next(stop_line_handler)      # AR 주차 ---> 정지선 �
 stop_line_handler.set_next(sliding_window_handler)  # 정지선 멈춤 ---> 슬라이딩 윈도우 주행
 # stop_line_handler.set_next(hough_line_handler)
 
-handler = sliding_window_handler
-prev_speed = 50
+handler = ar_parking_handler
+prev_speed = 30
+prev_angle = 0
+laps_count = 2
+is_parking = False
 
 while not rospy.is_shutdown():
     ret, frame = manager.get_image()
@@ -61,12 +64,21 @@ while not rospy.is_shutdown():
     handler_info.ultrasonic_info    = ultrasonic_info if uRet else None
     handler_info.ar_info1           = ar_info1 if aRet1 else None
     handler_info.ar_info2           = ar_info2 if aRet2 else None
-    handler_info.laps_count         = 0
-    handler_info.speed              = prev_speed
-    handler_info.is_done            = False
+    handler_info.laps_count         = laps_count
+    handler_info.prev_speed         = prev_speed
+    handler_info.prev_angle         = prev_angle
+    handler_info.is_parking         = is_parking
 
     # 모터 정보 저장
-    motor_info = handler.handle(handler_info)
+    motor_info, updated_handler_info = handler.handle(handler_info)
+    if type(motor_info) is list:
+        prev_speed = 50
+    else:
+        prev_speed = motor_info.speed
+        prev_angle = motor_info.angle
+        
+    laps_count = updated_handler_info.laps_count
+    is_parking = updated_handler_info.is_parking
 
     # if type(motor_info) is not list:
     #     motor_info.speed = 0
