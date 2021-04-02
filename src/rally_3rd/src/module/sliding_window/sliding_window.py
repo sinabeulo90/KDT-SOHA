@@ -487,7 +487,7 @@ def get_steering_angle_from_linear_function_center(left_linear_func, right_linea
     return steering_deg
 
 
-def get_steering_angle_from_linear_function_center2(left_linear_func, right_linear_func, frame, prev_speed, lane_pixel_length=470, stanley_k=100):
+def get_steering_angle_from_linear_function_center2(left_linear_func, right_linear_func, frame, prev_speed, lane_pixel_length=470, stanley_k=110):
     height, width = frame.shape[:2]
     scan_height = height // 4 * 3
 
@@ -537,36 +537,36 @@ def get_steering_angle_from_linear_function_center2(left_linear_func, right_line
     # """
     # Explain Image
     # """
-    frame_bgr = frame
-    if frame.ndim == 2:
-        frame_bgr = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
-    explain_image = frame_bgr
-    # explain_image = np.zeros((800, 800, 3), dtype=np.uint8)
-    # explain_image[0:height, 0:width] = frame_bgr
-    # ys = np.linspace(0, 1000, num=1000, endpoint=True)
+    # frame_bgr = frame
+    # if frame.ndim == 2:
+    #     frame_bgr = cv.cvtColor(frame, cv.COLOR_GRAY2BGR)
+    # explain_image = frame_bgr
+    # # explain_image = np.zeros((800, 800, 3), dtype=np.uint8)
+    # # explain_image[0:height, 0:width] = frame_bgr
+    # # ys = np.linspace(0, 1000, num=1000, endpoint=True)
 
-    ys = np.linspace(0, height, num=explain_image.shape[0]*2, endpoint=True)
-    xs = left_linear_func(ys)
-    for x, y in zip(xs, ys):
-        if in_range(x, y, explain_image):
-            point = tuple(rint([x, y]))
-            cv.circle(explain_image, point, 1, (0, 255, 255), -1)
+    # ys = np.linspace(0, height, num=explain_image.shape[0]*2, endpoint=True)
+    # xs = left_linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 1, (0, 255, 255), -1)
 
-    xs = right_linear_func(ys)
-    for x, y in zip(xs, ys):
-        if in_range(x, y, explain_image):
-            point = tuple(rint([x, y]))
-            cv.circle(explain_image, point, 1, (0, 255, 255), -1)
+    # xs = right_linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 1, (0, 255, 255), -1)
 
-    xs = linear_func(ys)
-    for x, y in zip(xs, ys):
-        if in_range(x, y, explain_image):
-            point = tuple(rint([x, y]))
-            cv.circle(explain_image, point, 1, (0, 0, 255), -1)
-    # cv.line(explain_image, tuple(rint(heading_src)), tuple(rint(heading_dst)), (255, 0, 0), 10)
+    # xs = linear_func(ys)
+    # for x, y in zip(xs, ys):
+    #     if in_range(x, y, explain_image):
+    #         point = tuple(rint([x, y]))
+    #         cv.circle(explain_image, point, 1, (0, 0, 255), -1)
+    # # cv.line(explain_image, tuple(rint(heading_src)), tuple(rint(heading_dst)), (255, 0, 0), 10)
     
-    cv.imshow("explain", explain_image)
-    cv.waitKey(1)
+    # cv.imshow("explain", explain_image)
+    # cv.waitKey(1)
 
     # rel_x_ratio 적용된 새로운 heading 계산
     # heading_src = tuple(rint([width//2, height]))

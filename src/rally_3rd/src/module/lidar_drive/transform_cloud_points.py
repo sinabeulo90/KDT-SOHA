@@ -21,9 +21,9 @@ class TrnasformCP():
         self.C_roi_y = 0.931
         self.Offset_roi = 0.350
         self.Extend_roi = 0.3
-        self.Extend_roi_away = 0.4
+        self.Extend_roi_away = 0.2
         self.m_to_PIXEL = 515.58
-        self.K_avoidance = 180 / 3.14 * 1.2
+        self.K_avoidance = 0.8
         ## offset : distance from LIDAR to camera ROI with m unit
         ## C_x, C_y : Width & Height of camera ROI with m unit
         
@@ -123,7 +123,7 @@ class TrnasformCP():
             dist_right = right_x - temp_x
             center = left_x + (right_x - left_x) / 2
             if dist_left > 0 and dist_right > 0:
-                # print("pts", temp_x,temp_y)     
+                print("pts", temp_x,temp_y)     
                 if temp_x < center:
                     num_pt[0] += 1
                     cv2.circle(image, (int(temp_x), int(temp_y)), 5, (255,0,0), -1)
@@ -141,18 +141,18 @@ class TrnasformCP():
         if num_pt[0] > num_pt[1]:
             if not max_ptset_right == None:      
                 cv2.circle(image, max_ptset_right, 5, (0, 0, 255), -1)
-                return [(max_ptset_right[0] + right(max_ptset_right[1])) * 1 // 2, max_ptset_right[1]], self.speed
+                return [(max_ptset_right[0] + right(max_ptset_right[1])) * 4 // 7, max_ptset_right[1]], self.speed
             else: 
                 cv2.circle(image, max_ptset_left, 5, (0, 0, 255), -1)
-                return [(max_ptset_left[0] + right(max_ptset_left[1]))* 1 // 2, max_ptset_left[1]], self.speed
+                return [(max_ptset_left[0] + right(max_ptset_left[1]))* 4 // 7, max_ptset_left[1]], self.speed
                 
         elif num_pt[0] < num_pt[1]:
             if not max_ptset_left == None:    
                 cv2.circle(image, max_ptset_left, 5, (0, 0, 255), -1)
-                return [(max_ptset_left[0] + left(max_ptset_left[1])) * 1 // 2, max_ptset_left[1]], self.speed
+                return [(max_ptset_left[0] + left(max_ptset_left[1])) * 3 // 7, max_ptset_left[1]], self.speed
             else: 
                 cv2.circle(image, max_ptset_right, 5, (0, 0, 255), -1)
-                return [(max_ptset_right[0] + left(max_ptset_right[1])) * 1 // 2, max_ptset_right[1]], self.speed
+                return [(max_ptset_right[0] + left(max_ptset_right[1])) * 3 // 7, max_ptset_right[1]], self.speed
         return [240, 240], speed
 
 
@@ -167,10 +167,10 @@ class TrnasformCP():
             target, speed = self.get_maxpt(image, cp, left, right, speed)
         # if target[1] >= 450:
         #     target[1] = 450
-        slope = np.arctan(-(240 - target[0])/((479 + self.Extend_roi*self.m_to_PIXEL + 10) - target[1]))
-        cv2.circle(image, (int(target[0]), int(target[1])), 7, 255, -1)
-        # print(target)
-        angle = self.K_avoidance * slope
+        slope = np.arctan(-(240 - target[0])/((479 + self.Extend_roi*self.m_to_PIXEL + 1e-4) - target[1]))
+        # cv2.circle(image, (int(target[0]), int(target[1])), 7, 255, -1)
+        print(target)
+        angle = self.K_avoidance * np.degrees(slope)
         # print(angle)
         # print(angle)
         return angle, image, speed

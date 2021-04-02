@@ -48,12 +48,12 @@ class SlidingWindowHandler(AbstractHandler):
         if (ret_left and ret_right) \
         or (ret_left and abs(linear_func_left.c)[1] < 0.1 and self.is_straight_line(linear_func_left, preprcessed_frame))    \
         or (ret_right and abs(linear_func_right.c)[1] < 0.1 and self.is_straight_line(linear_func_right, preprcessed_frame)):
-            # motor_angle = self.get_steering_angle_center(preprcessed_frame, linear_func_left, linear_func_right)
-            motor_angle = self.get_steering_angle_center2(preprcessed_frame, linear_func_left, linear_func_right)
+            motor_angle = self.get_steering_angle_center(preprcessed_frame, linear_func_left, linear_func_right)
+            # motor_angle = self.get_steering_angle_center2(preprcessed_frame, linear_func_left, linear_func_right)
         # 한쪽 차선이 있을 경우, 커브 구간으로 생각하고 진행
         else:
-            # motor_angle = self.get_steering_angle_curve(preprcessed_frame, linear_func_left, linear_func_right)
-            motor_angle = self.get_steering_angle_curve2(preprcessed_frame, linear_func_left, linear_func_right)
+            motor_angle = self.get_steering_angle_curve(preprcessed_frame, linear_func_left, linear_func_right)
+            # motor_angle = self.get_steering_angle_curve2(preprcessed_frame, linear_func_left, linear_func_right)
 
         # 설정된 2차함수에 따라 angle 값을 새로 계산
         abs_motor_angle = max(0, get_linear_steering_angle2(abs(motor_angle)))
@@ -78,7 +78,7 @@ class SlidingWindowHandler(AbstractHandler):
                 angle = np.clip(motor_angle, -50, 50)
 
                 # 장애물에 따른 속도 고정
-                print(obs_angle, obs_speed, angle, speed)
+                # print(obs_angle, obs_speed, angle, speed)
                 speed = obs_speed
 
                 return MotorInfo(angle, speed), handler_info

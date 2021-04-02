@@ -50,9 +50,13 @@ while not rospy.is_shutdown():
     if ret is False:
         continue
 
-    # 프레임 수 검사
-    fps_dq.append(datetime.now())
-    fps = len(fps_dq) / ((fps_dq[-1]-fps_dq[0]).seconds + 1e-4)
+    # Auto Exposure 적용
+    # value = exposure.get_exposure(frame)
+    # exposure.change_exposure(frame)
+
+    # # 프레임 수 검사
+    # fps_dq.append(datetime.now())
+    # fps = len(fps_dq) / ((fps_dq[-1]-fps_dq[0]).seconds + 1e-4)
 
     # Handler 정보 저장
     (lRet, lidar_info), (l2Ret, lidar_param) = manager.get_lidar()
@@ -78,6 +82,7 @@ while not rospy.is_shutdown():
     else:
         prev_speed = motor_info.speed
         prev_angle = motor_info.angle
+        # motor_info.speed = 0
         
     laps_count = updated_handler_info.laps_count
     is_parking = updated_handler_info.is_parking
@@ -89,7 +94,6 @@ while not rospy.is_shutdown():
     if type(motor_info) != list:
         prev_speed = motor_info.speed
 
-    # value = exposure.get_exposure(frame)
     # print "fps: {:>1.0f} | value: {:d} | {:s}".format(fps, value, motor_info)
     # print "fps: {:>1.0f} | {:s}".format(fps, motor_info)
 

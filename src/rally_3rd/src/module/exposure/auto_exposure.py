@@ -12,11 +12,11 @@ from module.exposure.model import End2End
 
 class AutoExposure():
 
-    def __init__(self):
+    def __init__(self, episode_count=1700, batch_count=42):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         self.camera_device = "/dev/videoCAM"
-        self.net = self.load_model(1000, 77)
+        self.net = self.load_model(episode_count, batch_count)
         self.prev_value = 0
 
 
@@ -47,7 +47,7 @@ class AutoExposure():
 
     def set_exposure(self, value):
         if type(value) is int and value != self.prev_value:
-            command = "v4l2-ctl -d {:s} -c exposure_absolute={:d}".format(self.device_dir, value)
+            command = "v4l2-ctl -d {:s} -c exposure_absolute={:d}".format(self.camera_device, value)
             os.system(command)
             self.prev_value = value
 
@@ -60,6 +60,6 @@ class AutoExposure():
         if value < 30:
             result_ex = 50
         if value >= 60:
-            result_ex = 40
+            result_ex = 35
 
-        self.exposure_set(result_ex)
+        self.set_exposure(result_ex)

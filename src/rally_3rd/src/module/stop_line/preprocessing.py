@@ -19,7 +19,7 @@ tb_Hough = Trackbar(os.path.join(params_dir, "HoughLinesP"), "HoughLinesP", debu
 tb_adap2 = Trackbar(os.path.join(params_dir, "adaptiveThreshold"), "adaptiveThreshold2", debug=False)
 
 
-def preprocessing_stopline(frame, thres_L=200):
+def preprocessing_stopline(frame, thres_L=180):
     blur = cv.GaussianBlur(frame, (5, 5), 0)
     _, L, _ = cv.split(cv.cvtColor(blur, cv.COLOR_BGR2HLS))
     # _, binary = cv.threshold(L, thres_L, 255, cv.THRESH_BINARY)

@@ -2,6 +2,7 @@ IP=10.42.0.1
 
 # smbyun0214 workspace
 # rsync -avu src/sliding_window "nvidia@$IP:/home/nvidia/smbyun0214_ws/src/"
+# rsync -avu --delete src/rally_3rd "nvidia@$IP:/home/nvidia/smbyun0214_ws/src/"
 rsync -avu --delete src/rally_3rd "nvidia@$IP:/home/nvidia/smbyun0214_ws/src/"
 # rsync -avu --delete "nvidia@$IP:/home/nvidia/smbyun0214_ws/src/rally_3rd/src" src/rally_3rd/
 # rsync -avu --delete src "nvidia@$IP:/home/nvidia/smbyun0214_ws/"

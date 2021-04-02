@@ -101,13 +101,15 @@ class ParkingBehavior():
         # 초음파 센서를 이용하여 최대 후진(장애물 고려)
         # stage 2 for going backward
         backward_info = UltrasonicInfo()
-        backward_info.back_middle = 80
-        backward_info.back_right = 65
+        value1 = 63
+        backward_info.back_middle = value1+10
+        backward_info.back_right = value1
 
         forward_info = UltrasonicInfo()
-        forward_info.back_left = 15
-        forward_info.back_middle = 25
-        forward_info.back_right = 15
+        value2 = 15+3
+        forward_info.back_left = value2
+        forward_info.back_middle = value2+10
+        forward_info.back_right = value2
 
         while True:
             print("main ultrasonic", self.ultrasonic_info)
@@ -151,8 +153,8 @@ class ParkingBehavior():
                 yield False, angle, speed
             # exception
             elif self.ar_info2.dz == 0:
-                angle = 50
-                speed = 15
+                angle = 0
+                speed = -10
                 yield False, angle, speed
             else:
                 print("Parked")
