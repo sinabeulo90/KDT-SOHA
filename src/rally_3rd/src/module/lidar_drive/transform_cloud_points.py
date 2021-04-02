@@ -21,7 +21,7 @@ class TrnasformCP():
         self.C_roi_y = 0.931
         self.Offset_roi = 0.350
         self.Extend_roi = 0.3
-        self.Extend_roi_away = 0.1
+        self.Extend_roi_away = 0.2
         self.m_to_PIXEL = 515.58
         self.K_avoidance = 0.8
         ## offset : distance from LIDAR to camera ROI with m unit
@@ -30,7 +30,7 @@ class TrnasformCP():
         self.alphas = []
         self.del_alphas = param[0]
         self.number = param[1]
-        self.speed = 20
+        self.speed = 25
 
         self.check_cartesian_pt = 0
 

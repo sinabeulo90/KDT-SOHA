@@ -29,38 +29,56 @@ class StopLineHandler(AbstractHandler):
                       1, #<490
                       1] #<600
             '''
-            cycles = [11, #<90
-                      15, #<190
-                      15,#<240
-                      4, #<290
-                      3, #<390
-                      1, #<490
-                      1] #<600
+            cycles = {90: 11,  #<90
+                      116: 17,
+                      135: 15,  # <190
+                      190: 17,  #<190
+                      200: 13,
+                      240: 10,  #<240
+                      310: 6,  #<290
+                      350: 5,  # <390
+                      390: 3,  #<390
+                      490: 1,  #<490
+                      600: 1} #<600
 
             if where <=90:
                 motor_info_list.append(
-                    MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[0], delay_sec=0.05))
+                    MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[90], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
-            if where < 190:
-                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[1], delay_sec=0.05))
+            elif where < 116:
+                motor_info_list.append(
+                    MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[116], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
+            elif where < 135:
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[135], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
+            elif where < 190:
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[190], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
+            elif where < 200:
+                motor_info_list.append(
+                    MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[200], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
             elif where < 240:
-                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[2], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[240], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
-            elif where < 290:
-                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[3], delay_sec=0.05))
+            elif where < 310:
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[310], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
+            elif where < 350:
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[350], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
             elif where < 390:
-                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[4], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[390], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
             elif where < 490:
-                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[5], delay_sec=0.05))
-                motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=7, delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[490], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=8, delay_sec=0.05))
             else:
                 #a = 50
                 #b = 70
                 #cycle = int(round((600 - where + a) / b))
-                motor_info_list.append(MotorInfo(angle=0, speed=-5, iterations=cycles[5], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-5, iterations=cycles[600], delay_sec=0.05))
                 #motor_info_list.append(MotorInfo(angle=0, speed=-5, iterations=5, delay_sec=0.05))
 
             motor_info_list.append(MotorInfo(angle=0, speed=0, iterations=58, delay_sec=0.1)) # stop for 6 sec
