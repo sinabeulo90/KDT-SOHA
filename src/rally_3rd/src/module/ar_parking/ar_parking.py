@@ -101,8 +101,8 @@ class ParkingBehavior():
         # 초음파 센서를 이용하여 최대 후진(장애물 고려)
         # stage 2 for going backward
         backward_info = UltrasonicInfo()
-        value1 = 63
-        backward_info.back_middle = value1+10
+        value1 = 60
+        backward_info.back_middle = value1+8
         backward_info.back_right = value1
 
         forward_info = UltrasonicInfo()
@@ -143,7 +143,7 @@ class ParkingBehavior():
         print("stage_3")
         # 전방 AR만 이용해서 자리맞추면서 주차
         # stage 3 for heading AR tag
-        value_for_ar = 54
+        value_for_ar = 52
 
         while True:
             if self.ar_info2.dz > value_for_ar:

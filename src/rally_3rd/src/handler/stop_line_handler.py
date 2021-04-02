@@ -30,7 +30,8 @@ class StopLineHandler(AbstractHandler):
                       1] #<600
             '''
             cycles = [11, #<90
-                      14, #<190
+                      15, #<190
+                      15,#<240
                       4, #<290
                       3, #<390
                       1, #<490
@@ -43,14 +44,17 @@ class StopLineHandler(AbstractHandler):
             if where < 190:
                 motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[1], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
-            elif where < 290:
+            elif where < 240:
                 motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[2], delay_sec=0.05))
-                motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
-            elif where < 390:
+                motor_info_list.append(MotorInfo(angle=0, speed=-3, iterations=2, delay_sec=0.05))
+            elif where < 290:
                 motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[3], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
-            elif where < 490:
+            elif where < 390:
                 motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[4], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
+            elif where < 490:
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[5], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=7, delay_sec=0.05))
             else:
                 #a = 50
@@ -60,7 +64,7 @@ class StopLineHandler(AbstractHandler):
                 #motor_info_list.append(MotorInfo(angle=0, speed=-5, iterations=5, delay_sec=0.05))
 
             motor_info_list.append(MotorInfo(angle=0, speed=0, iterations=58, delay_sec=0.1)) # stop for 6 sec
-            motor_info_list.append(MotorInfo(angle=prev_angle/20, speed=self.speed, iterations=10, delay_sec=0.1))
+            motor_info_list.append(MotorInfo(angle=0, speed=self.speed, iterations=10, delay_sec=0.1))
             handler_info.laps_count += 1
             print("laps:",handler_info.laps_count)
             
