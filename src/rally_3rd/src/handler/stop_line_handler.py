@@ -15,7 +15,7 @@ class StopLineHandler(AbstractHandler):
         frame = handler_info.image
         prev_angle = handler_info.prev_angle
         
-        preprcessed_frame = preprocessing_stopline(frame, thres_L=200)
+        preprcessed_frame = preprocessing_stopline(frame, thres_L=190)
         ret, where = is_detect_crossline(preprcessed_frame, self.speed)
 
         if ret:
@@ -33,13 +33,15 @@ class StopLineHandler(AbstractHandler):
                       116: 17,
                       135: 15,  # <190
                       190: 17,  #<190
-                      200: 13,
+                      200: 12,
                       240: 10,  #<240
                       310: 6,  #<290
                       350: 5,  # <390
                       390: 3,  #<390
+                      450: 1,  # <490
                       490: 1,  #<490
-                      600: 1} #<600
+                      580: 2,
+                      600: 5} #<600
 
             if where <=90:
                 motor_info_list.append(
@@ -71,9 +73,14 @@ class StopLineHandler(AbstractHandler):
             elif where < 390:
                 motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[390], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=4, delay_sec=0.05))
+            elif where < 450:
+                motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[450], delay_sec=0.05))
+                motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=9, delay_sec=0.05))
             elif where < 490:
                 motor_info_list.append(MotorInfo(angle=0, speed=self.speed * 1 // 2, iterations=cycles[490], delay_sec=0.05))
                 motor_info_list.append(MotorInfo(angle=0, speed=-4, iterations=8, delay_sec=0.05))
+            elif where < 580:
+                motor_info_list.append(MotorInfo(angle=0, speed=-5, iterations=cycles[580], delay_sec=0.05))
             else:
                 #a = 50
                 #b = 70

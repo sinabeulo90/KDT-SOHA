@@ -52,8 +52,8 @@ class SlidingWindowHandler(AbstractHandler):
             # motor_angle = self.get_steering_angle_center2(preprcessed_frame, linear_func_left, linear_func_right)
         # 한쪽 차선이 있을 경우, 커브 구간으로 생각하고 진행
         else:
-            motor_angle = self.get_steering_angle_curve(preprcessed_frame, linear_func_left, linear_func_right)
-            # motor_angle = self.get_steering_angle_curve2(preprcessed_frame, linear_func_left, linear_func_right)
+            # motor_angle = self.get_steering_angle_curve(preprcessed_frame, linear_func_left, linear_func_right)
+            motor_angle = self.get_steering_angle_curve2(preprcessed_frame, linear_func_left, linear_func_right)
 
         # 설정된 2차함수에 따라 angle 값을 새로 계산
         abs_motor_angle = max(0, get_linear_steering_angle2(abs(motor_angle)))
