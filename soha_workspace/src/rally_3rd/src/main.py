@@ -15,7 +15,6 @@ from module.exposure.auto_exposure import AutoExposure
 
 from handler.stop_line_handler import StopLineHandler
 from handler.sliding_window_handler import SlidingWindowHandler
-from handler.hough_line_handler import HoughLineHandler
 from handler.ar_parking_handler import ARParkingHandler
 
 
@@ -26,15 +25,11 @@ exposure = AutoExposure()
 
 stop_line_handler = StopLineHandler()           # 정지선 멈춤 처리
 sliding_window_handler = SlidingWindowHandler() # 슬라이딩 윈도우 처리
-hough_line_handler = HoughLineHandler()         # Hough Line 처리
 ar_parking_handler = ARParkingHandler()         # AR 주차
 
 # 책임 연쇄 초기화
-# ar_parking_handler.set_next(sliding_window_handler)
-
 ar_parking_handler.set_next(stop_line_handler)      # AR 주차 ---> 정지선 멈춤
 stop_line_handler.set_next(sliding_window_handler)  # 정지선 멈춤 ---> 슬라이딩 윈도우 주행
-# stop_line_handler.set_next(hough_line_handler)
 
 handler = ar_parking_handler
 prev_speed = 30
