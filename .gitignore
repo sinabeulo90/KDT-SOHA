@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,ros,windows,linux,macos
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,ros,windows,linux,macos
+# Created by https://www.toptal.com/developers/gitignore/api/python,ros,linux,macos,windows,vscode
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,ros,linux,macos,windows,vscode
 
 ### Linux ###
 *~
@@ -185,8 +185,10 @@ dmypy.json
 .pytype/
 
 # operating system-related files
-*.DS_Store #file properties cache/storage on macOS
-Thumbs.db #thumbnail cache on Windows
+# file properties cache/storage on macOS
+*.DS_Store
+# thumbnail cache on Windows
+Thumbs.db
 
 # profiling data
 .prof
@@ -244,9 +246,12 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
+### vscode ###
+.vscode/*
+*.code-workspace
+
 ### Windows ###
 # Windows thumbnail cache files
-Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
@@ -270,4 +275,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/python,ros,windows,linux,macos
+# End of https://www.toptal.com/developers/gitignore/api/python,ros,linux,macos,windows,vscode

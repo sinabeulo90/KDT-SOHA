@@ -1,9 +1,0 @@
-export ws=smbyun0214_ws
-
-source /opt/ros/kinetic/setup.bash
-source ~/$ws/devel/setup.bash
-
-alias cm='cd ~/$ws && catkin_make'
-
-export ROS_MASTER_URI=http://10.42.0.1:11311
-export ROS_HOSTNAME=10.42.0.1
