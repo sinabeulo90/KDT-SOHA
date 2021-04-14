@@ -8,6 +8,9 @@
 [YouTube 링크](https://youtu.be/GPqNeLPR5EA)
 
 
+<br>
+
+
 ## 1. 대회 결과
 결론적으로는 DQN을 적용한 장애물 회피 주행을 성공하지 못했다. 약 2시간 동안 약3500번의 에피소드를 학습한 모델을 적용했기 때문에, 학습 시간의 문제라고 생각했다.
 
@@ -23,14 +26,16 @@
 | ![DQN v1 Loss](/assets/xycar_simulator/dqn_loss_v1.png) |
 
 
+<br>
+
 
 ## 2. 개선 과정 및 결과
 따라서 아래와 같이 수정을 한 뒤 24시간 학습을 진행하였고, 결과는 다음과 같다.
 
 | | 수정 전 | 수정 후 |
 |:-:|:-|:-|
-| Feature 구성 | Agent가 어떤 action을 선택한 뒤 차량이 1-Step 움직이면, 가장 최근 feature 부터 5개씩 skip된 10개의 feature를 학습에 사용 | Agent가 어떤 action을 선택한 뒤 차량이 **5-Step**{: style="color: red"} 움직이면, 가장 최근 10개의 feature를 학습에 사용 |
-| Reward | +1: 전진할 경우 <br> -1: 후진할 경우, 장애물을 부딪힐 경우 <br> 0: 정지할 경우 | **차량의 현재 위치를 기준으로 reward 도메인을 설정**{: style="color: red"} <br> +1: 도메인을 통과할 때, 속도가 +일 경우 <br> -1: 도메인을 통과할 때, 속도가 -일 경우 |
+| Feature 구성 | Agent가 어떤 action을 선택한 뒤 차량이 1-Step 움직이면, 가장 최근 feature 부터 5개씩 skip된 10개의 feature를 학습에 사용 | Agent가 어떤 action을 선택한 뒤 차량이 **5-Step**움직이면, 가장 최근 10개의 feature를 학습에 사용 |
+| Reward | +1: 전진할 경우 <br> -1: 후진할 경우, 장애물을 부딪힐 경우 <br> 0: 정지할 경우 | **차량의 현재 위치를 기준으로 reward 도메인을 설정** <br> +1: 도메인을 통과할 때, 속도가 +일 경우 <br> -1: 도메인을 통과할 때, 속도가 -일 경우 |
 | Batch Size | 1024 | 32 |
 | Epsilon | 0.3 | 1.0 |
 | Epsilon Decay | 0.00001 <br> 매 step마다 적용 | 0.0001 <br> 학습이 시작되고, 매 episode 마다 적용 |
@@ -55,6 +60,8 @@
 | ![DQN Loss](/assets/xycar_simulator/dqn_loss.png) | ![DQN Max Q](/assets/xycar_simulator/dqn_max_q.png) | ![DQN Reward](/assets/xycar_simulator/dqn_reward.png) |
 | 수정 전(파랑) / 수정 후(주황) | 수정 전(파랑) / 수정 후(주황) | 수정 전(파랑) / 수정 후(주황) |
 
+
+<br>
 
 
 ## 3. 폴더 구조
