@@ -8,32 +8,19 @@
 <br>
 
 
-## 1. 역할
-
-| 이름 | 담당 |
-|:-|:-|
-| 한찬영 | 트랙 주행, 장애물 통과 |
-| `변성목` | `트랙 주행`, `기능 통합` |
-| 오상윤 | 횡단보도, 주차구역 |
-| 정수림 | 자동 노출도 조절, 주차구역 |
+## 1. 트랙 주행
 
 
-<br>
-
-
-## 2. 트랙 주행
-
-
-### 2.1 Bird-eye view
+### 1.1 Bird-eye view
 
 CAM으로부터 프레임을 받아오면 OpenCV의 Adaptive Threshold 알고리즘으로 차선을 걸러내고, 슬라이딩 윈도우를 적용하기 위해 빨간색 ROI 영역만큼 Bird-eye view로 바꾼다.
 
 | 원본 | Bird-eye View |
 |:-:|:-:|
-|![CAM](../assets/original_roi_cut.gif)|![Bird-eye View](../assets/bird_eye_view_cut.gif)|
+|![CAM](/assets/soha_workspace/original_roi_cut.gif)|![Bird-eye View](/assets/soha_workspace/bird_eye_view_cut.gif)|
 
 
-### 2.2 Sliding Window
+### 1.2 Sliding Window
 
 본래의 슬라이딩 윈도우 방식은 영상 하단부터 고정된 크기의 윈도우가 겹쳐지지 않게 쌓아 올라가는 방식인데, 여기서는 조금 다른 방식을 사용했다.
 
@@ -49,13 +36,13 @@ CAM으로부터 프레임을 받아오면 OpenCV의 Adaptive Threshold 알고리
 
 | Sliding Window | Polynomial curve fitting |
 |:-:|:-:|
-|![CAM](../assets/sliding_window_cut.gif)|![Bird-eye View](../assets/polyfit_cut.gif)|
+|![CAM](/assets/soha_workspace/sliding_window_cut.gif)|![Bird-eye View](/assets/soha_workspace/polyfit_cut.gif)|
 
 
 <br>
 
 
-## 3. 기능 통합
+## 2. 기능 통합
 
 - CAM으로부터 얻은 영상은 총 5개의 기능에 활용된다. 하지만, 이 영상은 모든 기능에 동시에 사용되는 것은 아니고, 미션에 따라 아래와 같이 순차적으로 처리된다.
     1. 현재 영상에 대한 광도 확인
@@ -138,7 +125,7 @@ soha_workspace
 <br>
 
 
-## 4. 보완해야 할 점과 아쉬웠던 점
+## 3. 보완해야 할 점과 아쉬웠던 점
 
 1. 슬라이딩 윈도우의 높은 연산 비용 문제
     - 트랙 주행을 하기 위해서 위의 방식으로 사용할 경우, 연산 비용이 많아서 33fps에서 11fps로 줄어든다. Hough Line 방식을 사용할 경우, 약 20fps가량 확보된다고 한다.
@@ -156,7 +143,7 @@ soha_workspace
 <br>
 
 
-## 5. 느낀 점
+## 4. 느낀 점
 - 위의 기능을 모두 켰을 때 평균 10fps 정도가 나왔음에도, 가장 늦게 도착했지만 모든 미션을 수행하면서 완주까지 했다. (감격:grin:)
 - 실시간 문제에 대해 확인해야 할 것들이 trade-off 관계를 빠르게 확인해야 한다는 것을 배웠다.
 - 가장 소홀한 것처럼 보이는 기본 작업을 확실히 하지 않고 나중에 수정하려고 하면, 추가된 기능들이 제대로 동작하지 않을 것 같은 두려움 때문에 더 이상 손쓸 수 없이 방치된다는 것을 알게 되었다.
